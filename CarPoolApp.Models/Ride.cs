@@ -10,7 +10,7 @@ namespace CarPoolApp.Models
     {
         public Ride()
         {
-            Route = new List<City>();
+            
             BookingRequest = new List<Booking>();
         }
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -18,7 +18,7 @@ namespace CarPoolApp.Models
 
         public DateTime StartTime { get; set; }
         public string Status { get; set; }
-        public decimal PricePerKm { get; set; }
+        public double PricePerKm { get; set; }
         public int AvailableSeat { get; set; }
         public ICollection<City> Route { get; set; }
         public ICollection<Booking> BookingRequest { get; set; }

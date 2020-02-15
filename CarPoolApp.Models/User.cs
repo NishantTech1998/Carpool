@@ -25,6 +25,7 @@ namespace CarPoolApp.Models
         {
             Rides = new List<Ride>();
             Bookings = new List<Booking>();
+            CurrentAddress = new Address();
         }
     }
 }

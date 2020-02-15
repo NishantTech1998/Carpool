@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using CarPoolApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarPoolApp.Data
 {
@@ -21,7 +22,7 @@ namespace CarPoolApp.Data
         {
             using (var db = new CarPoolContext())
             {
-                return db.Users.Where(user => user.UserId == userId).SingleOrDefault();
+                return db.Users.Where(user => user.UserId == userId).Include(s=>s.Car).SingleOrDefault();
             }
         }
     }

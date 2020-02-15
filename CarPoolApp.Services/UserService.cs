@@ -14,7 +14,7 @@ namespace CarPoolApp.Services
         public bool Login(string userID, string password)
         {
             User user = userData.GetUserById(userID);
-            return (user == null || (user != null && user.Password != password));
+            return (user == null || (user != null && user.Password == password));
         }
 
         public bool SignUp(User user)
@@ -37,6 +37,6 @@ namespace CarPoolApp.Services
             return userData.GetUserById(userId);
         }
 
-        //      public void UpdateProfile() { }
+     // public void UpdateProfile() { }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CarPoolApp.Migrations
 {
-    public partial class Carpool : Migration
+    public partial class @new : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,7 +18,12 @@ namespace CarPoolApp.Migrations
                     AadharNumber = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     ContactNumber = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true)
+                    Email = table.Column<string>(nullable: true),
+                    LicenseNumber = table.Column<string>(nullable: true),
+                    Brand = table.Column<string>(nullable: true),
+                    Model = table.Column<string>(nullable: true),
+                    Color = table.Column<string>(nullable: true),
+                    TotalSeat = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -50,36 +55,13 @@ namespace CarPoolApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cars",
-                columns: table => new
-                {
-                    CarId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Brand = table.Column<string>(nullable: true),
-                    Model = table.Column<string>(nullable: true),
-                    Color = table.Column<string>(nullable: true),
-                    TotalSeat = table.Column<int>(nullable: false),
-                    UserId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cars", x => x.CarId);
-                    table.ForeignKey(
-                        name: "FK_Cars_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Rides",
                 columns: table => new
                 {
                     RideId = table.Column<string>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: false),
                     Status = table.Column<string>(nullable: true),
-                    PricePerKm = table.Column<decimal>(nullable: false),
+                    PricePerKm = table.Column<double>(nullable: false),
                     AvailableSeat = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -91,7 +73,7 @@ namespace CarPoolApp.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,6 +83,8 @@ namespace CarPoolApp.Migrations
                     BookingId = table.Column<string>(nullable: false),
                     RideId = table.Column<string>(nullable: true),
                     Status = table.Column<string>(nullable: true),
+                    Source = table.Column<string>(nullable: true),
+                    Destination = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -111,13 +95,12 @@ namespace CarPoolApp.Migrations
                         column: x => x.RideId,
                         principalTable: "Rides",
                         principalColumn: "RideId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -127,6 +110,7 @@ namespace CarPoolApp.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CityName = table.Column<string>(nullable: true),
+                    SeatAvaible = table.Column<int>(nullable: false),
                     RideID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -137,7 +121,7 @@ namespace CarPoolApp.Migrations
                         column: x => x.RideID,
                         principalTable: "Rides",
                         principalColumn: "RideId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -158,13 +142,6 @@ namespace CarPoolApp.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_UserId",
-                table: "Cars",
-                column: "UserId",
-                unique: true,
-                filter: "[UserId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cities_RideID",
                 table: "Cities",
                 column: "RideID");
@@ -182,9 +159,6 @@ namespace CarPoolApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bookings");
-
-            migrationBuilder.DropTable(
-                name: "Cars");
 
             migrationBuilder.DropTable(
                 name: "Cities");

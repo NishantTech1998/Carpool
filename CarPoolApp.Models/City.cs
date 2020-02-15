@@ -11,6 +11,7 @@ namespace CarPoolApp.Models
     {
        public int ID { get; set; }
        public string CityName { get; set; }
+       public int SeatAvaible { get; set; }
        public virtual Ride Ride { get; set; }
        public string RideID { get; set; }
     }
