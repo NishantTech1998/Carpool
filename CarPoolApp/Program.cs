@@ -70,11 +70,11 @@ namespace CarPoolApp
             Console.WriteLine("License Number");
             car.LicenseNumber = Console.ReadLine();
             Console.WriteLine("User ID");
-            user.UserId = Console.ReadLine();
+            user.Id = Console.ReadLine();
             Console.WriteLine("PassWord");
             user.Password = Console.ReadLine();
-            user.CurrentAddress.UserId = user.UserId;
-            car.UserId= user.UserId;
+            user.CurrentAddress.UserId = user.Id;
+            car.UserId= user.Id;
             user.Car = car;
             UserService userService = new UserService();
             if (userService.SignUp(user))
@@ -108,7 +108,7 @@ namespace CarPoolApp
             Console.Clear();
             User user = userService.GetProfile(activeUser);
             Console.WriteLine($"Name :{user.FirstName + " " + user.LastName}");
-            Console.WriteLine($"User ID :{user.UserId}");
+            Console.WriteLine($"User ID :{user.Id}");
             Console.WriteLine($"BirthDate :{user.Dob}");
             Console.WriteLine($"Email ID :{user.Email}");
             Console.WriteLine($"Contact Number :{user.ContactNumber}");
@@ -128,7 +128,7 @@ namespace CarPoolApp
             User user = userService.GetProfile(activeUser);
             if (user.Car.TotalSeat != 0)
             {
-                ride.RideId = "R" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
+                ride.Id = "R" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
                 GeoService geoService = new GeoService();
                 string city;
                 Console.Clear();
@@ -149,8 +149,8 @@ namespace CarPoolApp
                     if (geoService.IsCityAvailable(city))
                     {
                         cities.CityName = city;
-                        cities.RideID = ride.RideId;
-                        cities.SeatAvaible = ride.AvailableSeat;
+                        cities.RideID = ride.Id;
+                        cities.SeatAvailable = ride.AvailableSeat;
                         ride.Route.Add(cities);
                     }
                 } while (!geoService.IsCityAvailable(city));
@@ -171,8 +171,8 @@ namespace CarPoolApp
                         if (geoService.IsCityAvailable(city))
                         {
                             cities.CityName = city;
-                            cities.RideID = ride.RideId;
-                            cities.SeatAvaible = ride.AvailableSeat;
+                            cities.RideID = ride.Id;
+                            cities.SeatAvailable = ride.AvailableSeat;
                             ride.Route.Add(cities);
                         }
                     } while (!geoService.IsCityAvailable(city));
@@ -186,8 +186,8 @@ namespace CarPoolApp
                     if (geoService.IsCityAvailable(city))
                     {
                         cities.CityName = city;
-                        cities.RideID = ride.RideId;
-                        cities.SeatAvaible = ride.AvailableSeat;
+                        cities.RideID = ride.Id;
+                        cities.SeatAvailable = ride.AvailableSeat;
                         ride.Route.Add(cities);
                     }
                 } while (!geoService.IsCityAvailable(city));
@@ -220,7 +220,7 @@ namespace CarPoolApp
             string Source;
             string Destination;
             Booking booking = new Booking();
-            booking.BookingId="Bid"+activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute+DateTime.Now.Second;
+            booking.Id="Bid"+activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute+DateTime.Now.Second;
             do
             {
                 Console.WriteLine("Enter Your Source Location");
@@ -252,7 +252,7 @@ namespace CarPoolApp
             {
                 RideService rideService = new RideService();
                 BookingService bookingServices = new BookingService();
-                booking.RideId = rideService.SearchRide(booking.Source, booking.Destination)[int.Parse(Response) - 1].RideId;
+                booking.RideId = rideService.SearchRide(booking.Source, booking.Destination)[int.Parse(Response) - 1].Id;
                 booking.UserId = activeUser;
                 booking.Status = "Waiting";
                 if(bookingServices.GetAvailableSeatAtSource(booking)<booking.SeatsBooked)
@@ -314,7 +314,7 @@ namespace CarPoolApp
             List<Booking> requests = bookingService.GetBookingRequest(userId);
             foreach(Booking request in requests)
             {
-                Console.WriteLine($"Booking Id :{request.BookingId}");
+                Console.WriteLine($"Booking Id :{request.Id}");
                 Console.WriteLine($"Ride Id :{request.RideId}");
                 Console.WriteLine($"Source :{request.Source}");
                 Console.WriteLine($"Destination :{request.Destination}");
@@ -348,7 +348,7 @@ namespace CarPoolApp
             List<Ride> myRides = rideService.GetCreatedRides(userId);
             foreach(Ride createdRide in myRides)
             {
-                Console.WriteLine($"Ride Id :{createdRide.RideId}");
+                Console.WriteLine($"Ride Id :{createdRide.Id}");
                 Console.WriteLine($"Ride Start:{createdRide.StartTime}");
                 Console.WriteLine($"PricePerKm{createdRide.PricePerKm}\n");
             }
@@ -375,7 +375,7 @@ namespace CarPoolApp
             List<Booking> bookings = bookingService.GetMyBookings(userId);
             foreach (Booking request in bookings)
             {
-                Console.WriteLine($"Booking Id :{request.BookingId}");
+                Console.WriteLine($"Booking Id :{request.Id}");
                 Console.WriteLine($"Ride Id :{request.RideId}");
                 Console.WriteLine($"Source :{request.Source}");
                 Console.WriteLine($"Destination :{request.Destination}");

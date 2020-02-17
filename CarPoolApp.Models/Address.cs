@@ -10,12 +10,13 @@ namespace CarPoolApp.Models
     public class Address
     {
         [Key]
-        public int AddressId { get; set; }
+        public int Id { get; set; }
         public string FirstLine { get; set; }
         public string SecondLine { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Pincode { get; set; }
+        [ForeignKey("User")]
         public string UserId { get; set; }
     }
 }

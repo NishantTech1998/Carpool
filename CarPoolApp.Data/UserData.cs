@@ -22,7 +22,7 @@ namespace CarPoolApp.Data
         {
             using (var db = new CarPoolContext())
             {
-                return db.Users.Where(user => user.UserId == userId).Include(s=>s.Car).SingleOrDefault();
+                return db.Users.Where(user => user.Id == userId).Include(s=>s.Car).SingleOrDefault();
             }
         }
 

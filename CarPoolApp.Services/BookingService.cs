@@ -3,24 +3,52 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 using CarPoolApp.Data;
+using System.Linq;
 
 namespace CarPoolApp.Services
 {
     public class BookingService
     {
+
         public bool CreateBooking(Booking booking)
         {
-            BookingData bookingData = new BookingData();
-            bool isSuccess;
-            try
+            using (var db = new CarPoolContext())
             {
-                isSuccess=bookingData.AddBooking(booking);
+                if (db.Bookings.Count() > 0)
+                {
+                    if ((db.Bookings.Where(b => b.UserId == booking.UserId && b.RideId == booking.RideId).Count() > 0) || GetAvailableSeatAtSource(booking) < 1)
+                        return false;
+                }
+                db.Bookings.Add(booking);
+                db.SaveChanges();
+                UpdateAvailableSeat(booking);
+                return true;
             }
-            catch(Exception)
+        }
+
+        public void UpdateAvailableSeat(Booking booking)
+        {
+            using (var db = new CarPoolContext())
             {
-                return false;
+                int sourceId = db.Cities.Where(c => c.CityName == booking.Source).Select(c => c.Id).First();
+                int destinationId = db.Cities.Where(c => c.CityName == booking.Destination).Select(c => c.Id).First();
+
+                foreach (City city in db.Cities.Where(c => c.RideID == booking.RideId))
+                {
+                    if (city.Id >= sourceId && city.Id < destinationId)
+                        city.SeatAvailable -= booking.SeatsBooked;
+                }
+                db.SaveChanges();
             }
-            return isSuccess;
+        }
+
+        public int GetAvailableSeatAtSource(Booking booking)
+        {
+            using (var db = new CarPoolContext())
+            {
+                List<City> cities = db.Cities.Where(c => c.RideID == booking.RideId).ToList();
+                
+            }
         }
 
         public void DeleteBooking(Booking booking)

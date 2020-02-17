@@ -13,7 +13,7 @@ namespace CarPoolApp.Data
         {
             using (var db = new CarPoolContext())
             {
-                List<string> RideId1 = db.Cities.Where(c => c.CityName == source && c.SeatAvaible > 0).Select(r => r.RideID).ToList();
+                List<string> RideId1 = db.Cities.Where(c => c.CityName == source && c.SeatAvailable > 0).Select(r => r.RideID).ToList();
                 List<string> RideId2 = db.Cities.Where(c => c.CityName == destination).Select(r => r.RideID).ToList();
                 return RideId1.Intersect(RideId2).ToList();
             }
@@ -27,7 +27,7 @@ namespace CarPoolApp.Data
             {
                 foreach (string id in AvailableRideId)
                 {
-                    AvailableRide.Add(db.Rides.Where(r => r.RideId == id).Include(r => r.User).ThenInclude(r=>r.Car).SingleOrDefault());
+                    AvailableRide.Add(db.Rides.Where(r => r.Id == id).Include(r => r.User).ThenInclude(r=>r.Car).SingleOrDefault());
                 }
             }
             return AvailableRide;

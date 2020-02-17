@@ -9,10 +9,10 @@ namespace CarPoolApp.Models
     
     public class City
     {
-       public int ID { get; set; }
+       public int Id { get; set; }
        public string CityName { get; set; }
-       public int SeatAvaible { get; set; }
-       public virtual Ride Ride { get; set; }
+       public int SeatAvailable { get; set; }
+       [ForeignKey("Ride")]
        public string RideID { get; set; }
     }
 }
