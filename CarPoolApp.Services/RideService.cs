@@ -34,7 +34,7 @@ namespace CarPoolApp.Services
 
         public List<Ride> GetCreatedRides(string userId)
         {
-            return rideData.GetCreatedRides(userId);
+            return rideData.GetRides(userId);
         }
 
         public void DeleteRide(Ride ride)

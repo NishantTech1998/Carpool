@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20200217084808_new.cs" />
-    <Compile Include="Migrations\20200217084808_new.Designer.cs" />
+    <Compile Include="Migrations\20200217101748_carpool.cs" />
+    <Compile Include="Migrations\20200217101748_carpool.Designer.cs" />
     <Compile Include="Migrations\CarPoolContextModelSnapshot.cs" />
   </ItemGroup>
 

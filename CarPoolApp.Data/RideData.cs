@@ -47,7 +47,7 @@ namespace CarPoolApp.Data
 
         }
 
-        public List<Ride> GetCreatedRides(string userId)
+        public List<Ride> GetRides(string userId)
         {
             using (var db = new CarPoolContext())
             {

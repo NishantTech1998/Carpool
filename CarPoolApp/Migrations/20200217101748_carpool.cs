@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CarPoolApp.Migrations
 {
-    public partial class @new : Migration
+    public partial class carpool : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -84,6 +84,7 @@ namespace CarPoolApp.Migrations
                     RideId = table.Column<string>(nullable: true),
                     Status = table.Column<string>(nullable: true),
                     Source = table.Column<string>(nullable: true),
+                    SeatsBooked = table.Column<int>(nullable: false),
                     Destination = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarPoolApp.Migrations
 {
     [DbContext(typeof(CarPoolContext))]
-    [Migration("20200217084808_new")]
-    partial class @new
+    [Migration("20200217101748_carpool")]
+    partial class carpool
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -65,6 +65,9 @@ namespace CarPoolApp.Migrations
 
                     b.Property<string>("RideId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SeatsBooked")
+                        .HasColumnType("int");
 
                     b.Property<string>("Source")
                         .HasColumnType("nvarchar(max)");

@@ -34,9 +34,9 @@ namespace CarPoolApp.Data
                 foreach (City city in db.Cities.Where(c=>c.RideID==booking.RideId))
                 {
                     if(city.CityName==booking.Source||city.CityName==booking.Destination)
-                    { city.SeatAvaible -= 1; }
+                    { city.SeatAvaible -= booking.SeatsBooked; }
                     else if(city.CityName!=booking.Source && city.CityName!=booking.Destination && city.ID >sourceId && city.ID<destinationId)
-                    { city.SeatAvaible -= 1; }
+                    { city.SeatAvaible -= booking.SeatsBooked; }
                     else
                     { city.SeatAvaible -= 0; }
                 }
@@ -63,7 +63,10 @@ namespace CarPoolApp.Data
                         if (cities[indexOfSource].SeatAvaible < cities[i].SeatAvaible)
                             break;
                     }
-                    return cities[i].SeatAvaible;
+                    if (i < cities.Count)
+                        return cities[i].SeatAvaible;
+                    else
+                        return cities[i - 1].SeatAvaible;
                 }
                 else
                 {

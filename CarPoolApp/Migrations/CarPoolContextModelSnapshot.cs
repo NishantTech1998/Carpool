@@ -64,6 +64,9 @@ namespace CarPoolApp.Migrations
                     b.Property<string>("RideId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("SeatsBooked")
+                        .HasColumnType("int");
+
                     b.Property<string>("Source")
                         .HasColumnType("nvarchar(max)");
 

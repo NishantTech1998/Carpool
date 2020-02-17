@@ -15,11 +15,11 @@ namespace CarPoolApp
             {
                 Console.Clear();
                 Console.WriteLine("\t\t\t\t\tCAR POOl APPLICATION");
-                Console.WriteLine("1.Log In\n2.Sign Up");
+                Console.WriteLine("1.Log In\n2.Sign Up\n Any Key To Exit");
                 Response = Console.ReadKey().Key;
                 if (Response == ConsoleKey.D1) { LogIn(); }
                 else if (Response == ConsoleKey.D2) { SignUp(); }
-                else { }
+                else { Environment.Exit(0); }
             } while (Response != ConsoleKey.D1 && Response != ConsoleKey.D2);
         }
         static void SignUp()
@@ -58,7 +58,15 @@ namespace CarPoolApp
             Console.WriteLine("Car Color");
             car.Color = Console.ReadLine();
             Console.WriteLine("Total Seats excluding driver");
-            car.TotalSeat = Int32.Parse(Console.ReadLine());
+            try
+            {
+                car.TotalSeat = Int32.Parse(Console.ReadLine());
+            }
+            catch(Exception)
+            {
+                car.TotalSeat = 0;
+            }
+          
             Console.WriteLine("License Number");
             car.LicenseNumber = Console.ReadLine();
             Console.WriteLine("User ID");
@@ -118,40 +126,25 @@ namespace CarPoolApp
             City cities;
             UserService userService=new UserService();
             User user = userService.GetProfile(activeUser);
-            ride.RideId = "R" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
-            GeoService geoService = new GeoService();
-            string city;
-            Console.Clear();
-            ride.Route = new List<City>();
-            Console.WriteLine("Enter Available Seat");
-            ride.AvailableSeat = Int32.Parse(Console.ReadLine());
-
-            do
+            if (user.Car.TotalSeat != 0)
             {
-                cities = new City();
-                Console.WriteLine("Enter Source city");
-                city = Console.ReadLine();
-                if (geoService.IsCityAvailable(city))
+                ride.RideId = "R" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
+                GeoService geoService = new GeoService();
+                string city;
+                Console.Clear();
+                ride.Route = new List<City>();
+                do
                 {
-                    cities.CityName = city;
-                    cities.RideID = ride.RideId;
-                    cities.SeatAvaible = ride.AvailableSeat;
-                    ride.Route.Add(cities);
-                }
-            } while (!geoService.IsCityAvailable(city));
+                    Console.WriteLine("Enter Available Seat");
+                    ride.AvailableSeat = Int32.Parse(Console.ReadLine());
+                    if (ride.AvailableSeat > user.Car.TotalSeat)
+                        Console.WriteLine("Value exceeds your's car capacity");
+                } while (ride.AvailableSeat > user.Car.TotalSeat);
 
-            ConsoleKey Response;
-            do
-            {
-                
-                Console.WriteLine("Add via points? (Y/N)");
-                Response = Console.ReadKey().Key;
-                if (Response == ConsoleKey.N)
-                    break;
                 do
                 {
                     cities = new City();
-                    Console.WriteLine("\nEnter ViaPoint city");
+                    Console.WriteLine("Enter Source city");
                     city = Console.ReadLine();
                     if (geoService.IsCityAvailable(city))
                     {
@@ -161,37 +154,62 @@ namespace CarPoolApp
                         ride.Route.Add(cities);
                     }
                 } while (!geoService.IsCityAvailable(city));
-            } while (Response == ConsoleKey.Y || Response != ConsoleKey.N);
 
-            do
-            {
-                cities = new City();
-                Console.WriteLine("Enter Destination city");
-                city = Console.ReadLine();
-                if (geoService.IsCityAvailable(city))
+                ConsoleKey Response;
+                do
                 {
-                    cities.CityName = city;
-                    cities.RideID = ride.RideId;
-                    cities.SeatAvaible = ride.AvailableSeat;
-                    ride.Route.Add(cities);
+
+                    Console.WriteLine("Add via points? (Y/N)");
+                    Response = Console.ReadKey().Key;
+                    if (Response == ConsoleKey.N)
+                        break;
+                    do
+                    {
+                        cities = new City();
+                        Console.WriteLine("\nEnter ViaPoint city");
+                        city = Console.ReadLine();
+                        if (geoService.IsCityAvailable(city))
+                        {
+                            cities.CityName = city;
+                            cities.RideID = ride.RideId;
+                            cities.SeatAvaible = ride.AvailableSeat;
+                            ride.Route.Add(cities);
+                        }
+                    } while (!geoService.IsCityAvailable(city));
+                } while (Response == ConsoleKey.Y || Response != ConsoleKey.N);
+
+                do
+                {
+                    cities = new City();
+                    Console.WriteLine("Enter Destination city");
+                    city = Console.ReadLine();
+                    if (geoService.IsCityAvailable(city))
+                    {
+                        cities.CityName = city;
+                        cities.RideID = ride.RideId;
+                        cities.SeatAvaible = ride.AvailableSeat;
+                        ride.Route.Add(cities);
+                    }
+                } while (!geoService.IsCityAvailable(city));
+
+                Console.WriteLine("\nEnter Start Date and Time");
+                ride.StartTime = DateTime.Parse(Console.ReadLine());
+
+                Console.WriteLine("Enter Price per km");
+                ride.PricePerKm = double.Parse(Console.ReadLine());
+
+
+
+                ride.UserId = activeUser;
+                RideService rideService = new RideService();
+                if (rideService.CreateRide(ride))
+                {
+                    Console.WriteLine("Added Successfully");
+                    Console.WriteLine("Press any key to go back");
+                    Console.ReadKey();
                 }
-            } while (!geoService.IsCityAvailable(city));
-
-            Console.WriteLine("\nEnter Start Date and Time");
-            ride.StartTime = DateTime.Parse(Console.ReadLine());
-
-            Console.WriteLine("Enter Price per km");
-            ride.PricePerKm = double.Parse(Console.ReadLine());
-
-            
-    
-            ride.UserId = activeUser;
-            RideService rideService = new RideService();
-            if (rideService.CreateRide(ride))
-            { Console.WriteLine("Added Successfully");
-                Console.WriteLine("Press any key to go back");
-                Console.ReadKey();
             }
+            else { Console.WriteLine("You dont have a car");Console.ReadKey(); UserMenu(); }
             
         }
 
@@ -226,6 +244,8 @@ namespace CarPoolApp
             ViewAvailableRide(booking.Source, booking.Destination);
             Console.WriteLine("\nEnter the ride no to Book or B to go back");
             string Response = Console.ReadLine();
+            Console.WriteLine("\nEnter the total seats you want");
+            booking.SeatsBooked = int.Parse(Console.ReadLine());
             if (Response == "B")
                 UserMenu();
             else
@@ -235,6 +255,11 @@ namespace CarPoolApp
                 booking.RideId = rideService.SearchRide(booking.Source, booking.Destination)[int.Parse(Response) - 1].RideId;
                 booking.UserId = activeUser;
                 booking.Status = "Waiting";
+                if(bookingServices.GetAvailableSeatAtSource(booking)<booking.SeatsBooked)
+                {
+                    Console.WriteLine("Seats exceed available");
+                    UserMenu();
+                }
                 if(bookingServices.CreateBooking(booking))
                 {
                     Console.WriteLine("Booking Created Successfully");
@@ -370,10 +395,30 @@ namespace CarPoolApp
                 userService.DeleteUser(activeUser);
         }
 
+        static void DeleteBooking()
+        {
+            BookingService bookingService = new BookingService();
+            List<Booking> bookings = bookingService.GetMyBookings(activeUser);
+            ViewMyBookings(activeUser);
+            Console.WriteLine("Enter Booking no to delete or B to go back");
+            string value = Console.ReadLine();
+            if (value != "B")
+            {
+                Console.WriteLine("Enter D to delete");
+                ConsoleKey response = Console.ReadKey().Key;
+                if (response == ConsoleKey.D)
+                {
+                    bookingService.DeleteBooking(bookings[int.Parse(value) - 1]);
+                }
+                else
+                    UserMenu();
+            }
+        }
+
         static void UserMenu()
         {
             Console.Clear();
-            Console.WriteLine("1.Create a Ride\n2.Book a Car\n3.View Bookings\n4.View Rides\n5.View Profile\n6.Delete Account\n7.Log Out");
+            Console.WriteLine("1.Create a Ride\n2.Book a Car\n3.View Bookings\n4.Delete Bookings\n5.View Rides\n6.View Profile\n7.Delete Account\n8.Log Out");
             ConsoleKey Response = Console.ReadKey().Key;
             switch (Response)
             {
@@ -387,15 +432,18 @@ namespace CarPoolApp
                     ViewBookingMenu();UserMenu();
                     break;
                 case ConsoleKey.D4:
-                    ViewCreatedRides(activeUser);UserMenu();
+                    DeleteBooking();UserMenu();
                     break;
                 case ConsoleKey.D5:
-                    ViewProfile(); UserMenu();
+                    ViewCreatedRides(activeUser);UserMenu();
                     break;
                 case ConsoleKey.D6:
-                    DeleteUser();HomePage();
+                    ViewProfile(); UserMenu();
                     break;
                 case ConsoleKey.D7:
+                    DeleteUser();HomePage();
+                    break;
+                case ConsoleKey.D8:
                     HomePage();
                     break;
             }

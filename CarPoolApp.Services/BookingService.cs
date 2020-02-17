@@ -23,9 +23,11 @@ namespace CarPoolApp.Services
             return isSuccess;
         }
 
-        public void CancelBooking() { }
-        public void UpdateBooking() { }
+        public void DeleteBooking(Booking booking)
+        {
 
+        }
+        
         public List<Booking> GetBookingRequest(string userId)
         {
             BookingData bookingData = new BookingData();
@@ -44,5 +46,10 @@ namespace CarPoolApp.Services
             return bookingData.GetMyBookings(userId);
         }
 
+        public int GetAvailableSeatAtSource(Booking booking)
+        {
+            BookingData bookingData = new BookingData();
+            return bookingData.GetAvailableSeatAtSource(booking);
+        }
     }
 }

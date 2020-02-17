@@ -15,16 +15,12 @@ namespace CarPoolApp.Models
         public DateTime Dob { get; set; }
         public string AadharNumber { get; set; }
         public string Password { get; set; }
-        public virtual Address CurrentAddress { get; set; }
+        public Address CurrentAddress { get; set; }
         public string ContactNumber { get; set; }
         public string Email { get; set; }
-        public virtual Car Car { get; set; }
-        public virtual ICollection<Ride> Rides { get; set; }
-        public virtual ICollection<Booking> Bookings { get; set; }
+        public Car Car { get; set; }
         public User()
         {
-            Rides = new List<Ride>();
-            Bookings = new List<Booking>();
             CurrentAddress = new Address();
         }
     }
