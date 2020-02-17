@@ -192,7 +192,8 @@ namespace CarPoolApp.Migrations
                 {
                     b.HasOne("CarPoolApp.Models.User", "User")
                         .WithOne("CurrentAddress")
-                        .HasForeignKey("CarPoolApp.Models.Address", "UserId");
+                        .HasForeignKey("CarPoolApp.Models.Address", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CarPoolApp.Models.Booking", b =>

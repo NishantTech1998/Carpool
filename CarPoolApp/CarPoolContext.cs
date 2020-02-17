@@ -23,6 +23,7 @@ namespace CarPoolApp
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().HasOne(e => e.Car).WithOne(e => e.User).HasForeignKey<Car>(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<User>().HasOne(e => e.CurrentAddress).WithOne(e => e.User).HasForeignKey<Address>(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Car>().ToTable("Users");
             modelBuilder.Entity<User>().HasMany(r => r.Rides).WithOne(u => u.User).OnDelete(DeleteBehavior.Cascade);

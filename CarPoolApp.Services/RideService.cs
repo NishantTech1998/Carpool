@@ -32,6 +32,14 @@ namespace CarPoolApp.Services
             return rideData.GetRideByRoute(source, destination);
         }
 
-        public void ViewOfferedRides() { }
+        public List<Ride> GetCreatedRides(string userId)
+        {
+            return rideData.GetCreatedRides(userId);
+        }
+
+        public void DeleteRide(Ride ride)
+        {
+            rideData.DeleteRide(ride);
+        }
     }
 }

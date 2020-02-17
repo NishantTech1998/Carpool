@@ -47,5 +47,21 @@ namespace CarPoolApp.Data
 
         }
 
+        public List<Ride> GetCreatedRides(string userId)
+        {
+            using (var db = new CarPoolContext())
+            {
+                return db.Rides.Where(r => r.UserId == userId).ToList();
+            }
+        }
+
+        public void DeleteRide(Ride ride)
+        {
+            using (var db = new CarPoolContext())
+            {
+                db.Rides.Remove(ride);
+                db.SaveChanges();
+            }
+        }
     }
 }

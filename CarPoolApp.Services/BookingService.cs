@@ -6,25 +6,43 @@ using CarPoolApp.Data;
 
 namespace CarPoolApp.Services
 {
-    public class BookingServices
+    public class BookingService
     {
         public bool CreateBooking(Booking booking)
         {
             BookingData bookingData = new BookingData();
-            //try
-            //{
-                bookingData.AddBooking(booking);
-            //}
-            //catch(Exception)
-            //{
+            bool isSuccess;
+            try
+            {
+                isSuccess=bookingData.AddBooking(booking);
+            }
+            catch(Exception)
+            {
                 return false;
-           // }
-            //return true;
+            }
+            return isSuccess;
         }
 
         public void CancelBooking() { }
         public void UpdateBooking() { }
-        public void ViewBookings() { }
+
+        public List<Booking> GetBookingRequest(string userId)
+        {
+            BookingData bookingData = new BookingData();
+            return bookingData.GetBookingRequest(userId);
+        }
+
+        public void AcceptBooking(Booking booking,string status)
+        {
+            BookingData bookingData = new BookingData();
+            bookingData.UpdateBookingStatus(booking,status);
+        }
+
+        public List<Booking> GetMyBookings(string userId)
+        {
+            BookingData bookingData = new BookingData();
+            return bookingData.GetMyBookings(userId);
+        }
 
     }
 }

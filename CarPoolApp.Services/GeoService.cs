@@ -44,24 +44,20 @@ namespace CarPoolApp.Services
 
         public double Radians(double x)
         {
-            const double PI = 3.14159265F;
-            return (x * PI / 180);
+            return (x/57.29577951);
         }
 
         public double Distance(string source,string destination)
         {
-            const double RADIUS = 6371;
+            //const double RADIUS = 6371;
             List<double> Coordinates = new List<double>();
             Coordinates.AddRange(GetLatitudeAndLongitude(source));
             Coordinates.AddRange(GetLatitudeAndLongitude(destination));
             double latDistance = Radians(Coordinates[0] - Coordinates[2]);
             double lngDistance = Radians(Coordinates[1] - Coordinates[3]);
-            double a = Math.Pow(Math.Sin(latDistance / 2), 2)
-                + Math.Pow(Math.Sin(lngDistance / 2), 2)
-                + Math.Cos(Radians(Coordinates[0]))
-                * Math.Cos(Radians(Coordinates[2]));
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return RADIUS * c;
+            double distanceInKm = 1.609344 * 396.30 * Math.Acos((Math.Sin(Coordinates[0]) * Math.Sin(Coordinates[2]))
+                + Math.Cos(Coordinates[0]) * Math.Cos(Coordinates[2]) * Math.Cos(lngDistance));
+            return distanceInKm;
         }
     }
 }

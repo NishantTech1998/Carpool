@@ -188,7 +188,10 @@ namespace CarPoolApp
             ride.UserId = activeUser;
             RideService rideService = new RideService();
             if (rideService.CreateRide(ride))
-            { Console.WriteLine("Added Successfully");}
+            { Console.WriteLine("Added Successfully");
+                Console.WriteLine("Press any key to go back");
+                Console.ReadKey();
+            }
             
         }
 
@@ -199,7 +202,7 @@ namespace CarPoolApp
             string Source;
             string Destination;
             Booking booking = new Booking();
-            booking.BookingId="Bid"+activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
+            booking.BookingId="Bid"+activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute+DateTime.Now.Second;
             do
             {
                 Console.WriteLine("Enter Your Source Location");
@@ -228,10 +231,20 @@ namespace CarPoolApp
             else
             {
                 RideService rideService = new RideService();
-                BookingServices bookingServices = new BookingServices();
+                BookingService bookingServices = new BookingService();
                 booking.RideId = rideService.SearchRide(booking.Source, booking.Destination)[int.Parse(Response) - 1].RideId;
                 booking.UserId = activeUser;
-                bookingServices.CreateBooking(booking);
+                booking.Status = "Waiting";
+                if(bookingServices.CreateBooking(booking))
+                {
+                    Console.WriteLine("Booking Created Successfully");
+                }
+                else
+                {
+                    Console.WriteLine("Error Encountered During Booking,You have booked this already");
+                }
+                Console.WriteLine("Press any key to go back");
+                Console.ReadKey();
             }
         }
 
@@ -253,6 +266,110 @@ namespace CarPoolApp
             }
         }
 
+        static void ViewBookingMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("1.View Booking request\n2.View My Bookings\n");
+            ConsoleKey ResponseForViewBooking = Console.ReadKey().Key;
+            switch(ResponseForViewBooking)
+            {
+                case ConsoleKey.D1:
+                    BookingRequest(activeUser);
+                    break;
+                case ConsoleKey.D2:
+                    ViewMyBookings(activeUser);
+                    break;
+            }
+        }
+
+        static void BookingRequest(string userId)
+        {
+            BookingService bookingService = new BookingService();
+            Console.Clear();
+            List<Booking> requests = bookingService.GetBookingRequest(userId);
+            foreach(Booking request in requests)
+            {
+                Console.WriteLine($"Booking Id :{request.BookingId}");
+                Console.WriteLine($"Ride Id :{request.RideId}");
+                Console.WriteLine($"Source :{request.Source}");
+                Console.WriteLine($"Destination :{request.Destination}");
+                Console.WriteLine($"Name :{request.User.FirstName}");
+                Console.WriteLine($"Contact :{request.User.ContactNumber}");
+                Console.WriteLine($"Status :{request.Status}\n");
+
+            }
+
+            Console.WriteLine("\nEnter the request no to accept or reject");
+            string Response = Console.ReadLine();
+            Console.WriteLine("\nEnter A to accept or R to Reject");
+            ConsoleKey value = Console.ReadKey().Key;
+            if (value == ConsoleKey.A)
+            {
+                bookingService.AcceptBooking(requests[int.Parse(Response) - 1], "accept");
+            }
+            else if (value == ConsoleKey.B)
+            {
+                bookingService.AcceptBooking(requests[int.Parse(Response) - 1], "reject");
+            }
+            else
+                UserMenu();
+
+        }
+
+        static void ViewCreatedRides(string userId)
+        {
+            RideService rideService = new RideService();
+            Console.Clear();
+            List<Ride> myRides = rideService.GetCreatedRides(userId);
+            foreach(Ride createdRide in myRides)
+            {
+                Console.WriteLine($"Ride Id :{createdRide.RideId}");
+                Console.WriteLine($"Ride Start:{createdRide.StartTime}");
+                Console.WriteLine($"PricePerKm{createdRide.PricePerKm}\n");
+            }
+            Console.WriteLine("Enter Ride no to delete or update or B to go back");
+            string value = Console.ReadLine();
+            Console.WriteLine("Enter D to delete or U to update");
+            ConsoleKey response = Console.ReadKey().Key;
+            if (response == ConsoleKey.D)
+            {
+                rideService.DeleteRide(myRides[int.Parse(value) - 1]);
+            }
+            else if (response == ConsoleKey.U)
+            {
+           //     UpdateRide();
+            }
+            else
+                UserMenu();
+        }
+
+        static void ViewMyBookings(string userId)
+        {
+            BookingService bookingService = new BookingService();
+            Console.Clear();
+            List<Booking> bookings = bookingService.GetMyBookings(userId);
+            foreach (Booking request in bookings)
+            {
+                Console.WriteLine($"Booking Id :{request.BookingId}");
+                Console.WriteLine($"Ride Id :{request.RideId}");
+                Console.WriteLine($"Source :{request.Source}");
+                Console.WriteLine($"Destination :{request.Destination}");
+                Console.WriteLine($"Name :{request.Ride.User.FirstName}");
+                Console.WriteLine($"Contact :{request.Ride.User.ContactNumber}");
+                Console.WriteLine($"Status :{request.Status}\n");
+            }
+            Console.ReadKey();
+        }
+
+        static void DeleteUser()
+        {
+            UserService userService = new UserService();
+            Console.Clear();
+            Console.WriteLine("Are You Sure You Want To Delete Your Account? {Y}:Yes  {N}:No");
+            if (Console.ReadKey().Key == ConsoleKey.Y)
+                userService.DeleteUser(activeUser);
+        }
+
         static void UserMenu()
         {
             Console.Clear();
@@ -266,8 +383,17 @@ namespace CarPoolApp
                 case ConsoleKey.D2:
                     BookRide();UserMenu();
                     break;
+                case ConsoleKey.D3:
+                    ViewBookingMenu();UserMenu();
+                    break;
+                case ConsoleKey.D4:
+                    ViewCreatedRides(activeUser);UserMenu();
+                    break;
                 case ConsoleKey.D5:
                     ViewProfile(); UserMenu();
+                    break;
+                case ConsoleKey.D6:
+                    DeleteUser();HomePage();
                     break;
                 case ConsoleKey.D7:
                     HomePage();

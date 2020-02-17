@@ -25,5 +25,14 @@ namespace CarPoolApp.Data
                 return db.Users.Where(user => user.UserId == userId).Include(s=>s.Car).SingleOrDefault();
             }
         }
+
+        public void DeleteUser(string userId)
+        {
+            using (var db = new CarPoolContext())
+            {
+                db.Users.Remove(GetUserById(userId));
+                db.SaveChanges();
+            }
+        }
     }
 }

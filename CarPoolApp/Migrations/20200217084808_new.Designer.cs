@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarPoolApp.Migrations
 {
     [DbContext(typeof(CarPoolContext))]
-    [Migration("20200215140548_new")]
+    [Migration("20200217084808_new")]
     partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -194,7 +194,8 @@ namespace CarPoolApp.Migrations
                 {
                     b.HasOne("CarPoolApp.Models.User", "User")
                         .WithOne("CurrentAddress")
-                        .HasForeignKey("CarPoolApp.Models.Address", "UserId");
+                        .HasForeignKey("CarPoolApp.Models.Address", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CarPoolApp.Models.Booking", b =>
