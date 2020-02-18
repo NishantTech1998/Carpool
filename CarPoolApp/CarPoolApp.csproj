@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20200217101748_carpool.cs" />
-    <Compile Include="Migrations\20200217101748_carpool.Designer.cs" />
+    <Compile Include="Migrations\20200218121646_carpool.cs" />
+    <Compile Include="Migrations\20200218121646_carpool.Designer.cs" />
     <Compile Include="Migrations\CarPoolContextModelSnapshot.cs" />
   </ItemGroup>
 
@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarPoolApp.Data\CarPoolApp.Data.csproj" />
     <ProjectReference Include="..\CarPoolApp.Models\CarPoolApp.Models.csproj" />
     <ProjectReference Include="..\CarPoolApp.Services\CarPoolApp.Services.csproj" />
   </ItemGroup>

@@ -21,7 +21,7 @@ namespace CarPoolApp.Migrations
 
             modelBuilder.Entity("CarPoolApp.Models.Address", b =>
                 {
-                    b.Property<int>("AddressId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -44,7 +44,7 @@ namespace CarPoolApp.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("AddressId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -55,14 +55,14 @@ namespace CarPoolApp.Migrations
 
             modelBuilder.Entity("CarPoolApp.Models.Booking", b =>
                 {
-                    b.Property<string>("BookingId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Destination")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RideId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SeatsBooked")
                         .HasColumnType("int");
@@ -74,13 +74,9 @@ namespace CarPoolApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("BookingId");
-
-                    b.HasIndex("RideId");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Bookings");
                 });
@@ -96,14 +92,14 @@ namespace CarPoolApp.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LicenseNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Model")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalSeat")
                         .HasColumnType("int");
+
+                    b.Property<string>("VehicleNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 
@@ -112,7 +108,7 @@ namespace CarPoolApp.Migrations
 
             modelBuilder.Entity("CarPoolApp.Models.City", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -121,21 +117,19 @@ namespace CarPoolApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RideID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SeatAvaible")
+                    b.Property<int>("SeatAvailable")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
-
-                    b.HasIndex("RideID");
+                    b.HasKey("Id");
 
                     b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("CarPoolApp.Models.Ride", b =>
                 {
-                    b.Property<string>("RideId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AvailableSeat")
@@ -151,18 +145,16 @@ namespace CarPoolApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RideId");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Rides");
                 });
 
             modelBuilder.Entity("CarPoolApp.Models.User", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AadharNumber")
@@ -186,7 +178,7 @@ namespace CarPoolApp.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
@@ -199,19 +191,6 @@ namespace CarPoolApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CarPoolApp.Models.Booking", b =>
-                {
-                    b.HasOne("CarPoolApp.Models.Ride", "Ride")
-                        .WithMany("BookingRequest")
-                        .HasForeignKey("RideId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("CarPoolApp.Models.User", "User")
-                        .WithMany("Bookings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-                });
-
             modelBuilder.Entity("CarPoolApp.Models.Car", b =>
                 {
                     b.HasOne("CarPoolApp.Models.User", "User")
@@ -219,22 +198,6 @@ namespace CarPoolApp.Migrations
                         .HasForeignKey("CarPoolApp.Models.Car", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CarPoolApp.Models.City", b =>
-                {
-                    b.HasOne("CarPoolApp.Models.Ride", "Ride")
-                        .WithMany("Route")
-                        .HasForeignKey("RideID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CarPoolApp.Models.Ride", b =>
-                {
-                    b.HasOne("CarPoolApp.Models.User", "User")
-                        .WithMany("Rides")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

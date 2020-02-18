@@ -16,6 +16,7 @@ namespace CarPoolApp.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Pincode { get; set; }
+        public User User { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
     }

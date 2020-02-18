@@ -2,44 +2,86 @@
 using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
-using CarPoolApp.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace CarPoolApp.Services
 {
     public class RideService
     {
-        readonly RideData rideData=new RideData();
         public bool CreateRide(Ride ride)
         {
-            try
+          using (var db = new CarPoolContext())
+          {
+                try
+                {
+                    db.Rides.Add(ride);
+                    foreach (City c in ride.ViaPoints)
+                    {
+                        db.Cities.Add(c);
+                    }
+                }
+                catch(Exception)
+                { return false; }
+                db.SaveChanges();
+                return true;
+          }
+        }
+
+        public List<Ride> GetRideByRoute(string source, string destination)
+        {
+            List<Ride> AvailableRide = new List<Ride>();
+            using (var db = new CarPoolContext())
             {
-                rideData.AddNewRide(ride);
+                City Source = null;
+                List < Ride > Rides= db.Rides.ToList();
+               foreach(City city in db.Cities)
+                {
+                    if (city.CityName == source)
+                        Source = city;
+                    if (city.CityName == destination && Source != null && city.RideID == Source.RideID && city.Id > Source.Id)
+                        AvailableRide.Add(Rides.Where(r => r.Id == Source.RideID).SingleOrDefault());
+                }
             }
-            catch (Exception)
+            return AvailableRide;
+        }
+
+        public List<Ride> GetMyRides(string userId)
+        {
+            using (var db = new CarPoolContext())
             {
-                return false;
+                return db.Rides.Where(r => r.UserId == userId).ToList();
             }
-            return true;
         }
 
-        public void CancelRide() { }
-
-        public void UpdateRide() { }
-
-        public List<Ride> SearchRide(string source,string destination)
+        public void CancelRide(Ride ride)
         {
-            return rideData.GetRideByRoute(source, destination);
+            using (var db = new CarPoolContext())
+            {
+                db.Rides.Remove(ride);
+
+                foreach(City city in db.Cities)
+                {
+                    if (city.RideID == ride.Id)
+                        db.Cities.Remove(city);
+                }
+
+                foreach (Booking booking in db.Bookings)
+                {
+                    if (booking.RideId == ride.Id)
+                        db.Bookings.Remove(booking);
+                }
+
+                db.SaveChanges();
+            }
         }
 
-        public List<Ride> GetCreatedRides(string userId)
+        public static Ride GetRideByRideId(string rideId)
         {
-            return rideData.GetRides(userId);
-        }
-
-        public void DeleteRide(Ride ride)
-        {
-            rideData.DeleteRide(ride);
+            using (var db = new CarPoolContext())
+            {
+                return db.Rides.Where(r => r.Id == rideId).Single();
+            }
         }
     }
 }
