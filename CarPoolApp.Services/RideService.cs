@@ -83,5 +83,6 @@ namespace CarPoolApp.Services
                 return db.Rides.Where(r => r.Id == rideId).Single();
             }
         }
+
     }
 }

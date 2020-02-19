@@ -19,9 +19,6 @@ namespace CarPoolApp.Models
         public string ContactNumber { get; set; }
         public string Email { get; set; }
         public Car Car { get; set; }
-        public User()
-        {
-            CurrentAddress = new Address();
-        }
+       
     }
 }

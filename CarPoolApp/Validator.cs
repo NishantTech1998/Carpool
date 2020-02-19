@@ -112,6 +112,27 @@ namespace CarPoolApp
             return name;
         }
 
+        public static string PinValidator(this string pin)
+        {
+            string strRegex = @"(^[0-9]{6}$)";
+            Regex re = new Regex(strRegex);
+
+            do
+            {
+                if (re.IsMatch(pin))
+                {
+                    break;
+                }
+                else
+                {
+                    Message("Invalid Pin");
+                    pin = Console.ReadLine().NotEmptyValidator();
+                }
+            } while (true);
+
+            return pin;
+        }
+
         public static string YesNOValidator(this string response)
         {
             string strRegex = @"(^(Y)$)|(^(N)$)";

@@ -8,7 +8,7 @@ namespace CarPoolApp
 {
     public class CarPoolContext:DbContext
     {
-        private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=CarPool;Trusted_Connection=True;";
+        private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=CarPool;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public CarPoolContext() : base()
         {

@@ -19,11 +19,12 @@ namespace CarPoolApp.UI
             {
                 Console.Clear();
                 Console.WriteLine("\t\t\t\t\tCAR POOl APPLICATION");
-                Console.WriteLine("1.Log In\n2.Sign Up\n Any Number To Exit");
+                Console.WriteLine("1.Log In\n2.Sign Up\n3.Exit\nAny Number To Exit");
                 Response = Console.ReadLine().NotEmptyValidator().MenuResponseValidator();
                 if (Response == "1") { LogIn(); }
                 else if (Response == "2") { SignUp(); }
-                else { Environment.Exit(0); }
+                else if(Response=="3") { Environment.Exit(0); }
+                else { }
             } while (Response != "1" && Response != "2");
         }
 
@@ -39,7 +40,7 @@ namespace CarPoolApp.UI
             if (userService.Login(UserID, Password))
             {
                 activeUser = UserID;
-                Program.UserMenu();
+                Program.UserChoices();
             }
             else
             {
@@ -75,7 +76,7 @@ namespace CarPoolApp.UI
             Console.WriteLine("State");
             address.State = Console.ReadLine().NotEmptyValidator();
             Console.WriteLine("Pincode");
-            address.Pincode = Console.ReadLine().NotEmptyValidator();
+            address.Pincode = Console.ReadLine().NotEmptyValidator().PinValidator();
             Console.Clear();
             user.CurrentAddress = address;
             Console.WriteLine("Do You Have a Car? {Y}:Yes {N}:No");
@@ -106,9 +107,9 @@ namespace CarPoolApp.UI
                 user.Car = car;
             }
             Console.WriteLine("User ID");
-            user.Id = Console.ReadLine().NotEmptyValidator().NameValidator();
+            user.Id = Console.ReadLine().NotEmptyValidator();
             Console.WriteLine("PassWord");
-            user.Password = Console.ReadLine().NotEmptyValidator().NameValidator();
+            user.Password = Console.ReadLine().NotEmptyValidator();
             address.UserId = user.Id;
       
             UserService userService = new UserService();
@@ -144,7 +145,7 @@ namespace CarPoolApp.UI
             else if (response == "U")
                 UpdateUser();
             else if (response == "B")
-                Program.UserMenu();
+                Program.UserChoices();
             else
                 ViewProfile();
         }
@@ -161,7 +162,7 @@ namespace CarPoolApp.UI
                 Console.WriteLine("Your Account is deleted");
                 Console.ReadKey();
             }
-            Program.UserMenu();
+            HomePage();
         }
 
         static void UpdateUser()
@@ -193,6 +194,7 @@ namespace CarPoolApp.UI
             } while (choice == "R");
             user.Car = car;
             userService.UpdateProfile(user);
+            Program.UserChoices();
         }
     }
 }

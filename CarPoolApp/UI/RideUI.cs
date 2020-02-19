@@ -17,7 +17,7 @@ namespace CarPoolApp.UI
             activeUser = UserUI.activeUser;
             UserService userService = new UserService();
             User user = userService.GetProfile(activeUser);
-            if (user.Car.TotalSeat != 0)
+            if (user.Car.TotalSeat > 0)
             {
                 ride.Id = "R" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
                 GeoService geoService = new GeoService();
@@ -100,7 +100,8 @@ namespace CarPoolApp.UI
                     Console.ReadKey();
                 }
             }
-            else { Console.WriteLine("You dont have a car"); Console.ReadKey(); Program.UserMenu(); }
+            else { Console.WriteLine("You dont have a car"); Console.ReadKey(); }
+            Program.UserChoices();
         }
 
         public static void ViewAvailableRide(string source, string destination)
@@ -114,6 +115,7 @@ namespace CarPoolApp.UI
             foreach (Ride ride in AvailableRides)
             {
                 User user = userService.GetProfile(ride.UserId);
+                Console.WriteLine($"Ride ID :{ride.Id}");
                 Console.WriteLine($"Ride Creator :{user.FirstName}");
                 Console.WriteLine($"Car Description :{user.Car.Color} {user.Car.Model} {user.Car.Brand}");
                 Console.WriteLine($"Total Distance :{geoService.Distance(source, destination)} KM");
@@ -135,29 +137,22 @@ namespace CarPoolApp.UI
                 Console.WriteLine($"Ride Start:{createdRide.StartTime}");
                 Console.WriteLine($"PricePerKm{createdRide.PricePerKm}\n");
             }
-            Console.WriteLine("Enter Ride Serial no to delete or B to go back");
+            Console.WriteLine("Enter Ride ID to delete or B to go back");
             string value = Console.ReadLine().NotEmptyValidator();
             if (value != "B")
             {
+                Ride ride = RideService.GetRideByRideId(value);
+                if (ride == null) { Console.WriteLine("No Such Ride Found");Console.ReadKey();Program.UserChoices(); }
                 Console.WriteLine("{D} :Delete {any key} : Go Back");
                 ConsoleKey response = Console.ReadKey().Key;
                 if (response == ConsoleKey.D)
                 {
-                    try
-                    {
-                        rideService.CancelRide(myRides[int.Parse(value) - 1]);
-                    }
-                    catch(ArgumentOutOfRangeException)
-                    {
-                        Console.WriteLine("\nRide Not Present");
-                        Console.ReadKey();
-                        ViewMyRides();
-                    }
+                    rideService.CancelRide(ride);                  
                     Console.WriteLine("Your ride is cancelled");
                     Console.ReadKey();
                 }   
             }
-            Program.UserMenu();
+            Program.UserChoices();
         }
 
     }

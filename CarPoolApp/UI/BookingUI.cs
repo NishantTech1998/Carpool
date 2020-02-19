@@ -8,11 +8,12 @@ namespace CarPoolApp.UI
 {
     class BookingUI
     {
-        static string activeUser = UserUI.activeUser;
+        static string activeUser;
 
         public static void BookRide()
         {
             string Source,Destination;
+            activeUser = UserUI.activeUser;
             GeoService geoService = new GeoService();
             Booking booking = new Booking();
             Console.Clear();
@@ -39,26 +40,28 @@ namespace CarPoolApp.UI
             } while (!geoService.IsCityAvailable(Destination));
 
             RideUI.ViewAvailableRide(booking.Source, booking.Destination);
-            Console.WriteLine("\nEnter the ride Serial no to Book or B to go back");
+            Console.WriteLine("\nEnter the ride Id to Book or B to go back");
             string Response = Console.ReadLine().NotEmptyValidator();
             
            
             if (Response == "B")
-                Program.UserMenu();
+                Program.UserChoices();
             else
             {
+                Ride ride = RideService.GetRideByRideId(Response);
+                if (ride == null) { Console.WriteLine("Wrong Ride Id");Console.ReadKey();Program.UserChoices(); }
                 RideService rideService = new RideService();
                 BookingService bookingServices = new BookingService();
                 Console.WriteLine("\nEnter the total seats you want");
                 booking.SeatsBooked = int.Parse(Console.ReadLine().NotEmptyValidator().MenuResponseValidator());
-                booking.RideId = rideService.GetRideByRoute(booking.Source, booking.Destination)[int.Parse(Response) - 1].Id;
+                booking.RideId = ride.Id;
                 booking.UserId = activeUser;
                 booking.Status = "Waiting";
                 if (bookingServices.GetAvailableSeatAtSource(booking) < booking.SeatsBooked)
                 {
                     Console.WriteLine("Seats exceeds available");
                     Console.ReadKey();
-                    Program.UserMenu();
+                    Program.UserChoices();
                 }
                 if (bookingServices.CreateBooking(booking))
                 {
@@ -70,13 +73,15 @@ namespace CarPoolApp.UI
                 }
                 Console.WriteLine("Press any key to go back");
                 Console.ReadKey();
+                Program.UserChoices();
             }
         }
 
-        public static void ViewBookingsForMyRides(string userId)
+        public static void ViewBookingsForMyRides()
         {
             RideService rideService = new RideService();
             Console.Clear();
+            activeUser = UserUI.activeUser;
             List<Ride> myRides = rideService.GetMyRides(activeUser);
             foreach (Ride createdRide in myRides)
             {
@@ -134,15 +139,15 @@ namespace CarPoolApp.UI
                 { Console.WriteLine("Booking Id Not Present"); }
             }
             
-            Program.UserMenu();
+            Program.UserChoices();
         }
 
-        public static void ViewMyBookings(string userId)
+        public static void ViewMyBookings()
         {
             BookingService bookingService = new BookingService();
             UserService userService = new UserService();
             Console.Clear();
-            List<Booking> bookings = bookingService.GetMyBookings(userId);
+            List<Booking> bookings = bookingService.GetMyBookings(UserUI.activeUser);
 
             foreach (Booking booking in bookings)
             {
@@ -177,7 +182,7 @@ namespace CarPoolApp.UI
                     }
                 }
             }
-            Program.UserMenu();
+            Program.UserChoices();
         }
     }
 

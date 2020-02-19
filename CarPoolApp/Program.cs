@@ -1,6 +1,7 @@
 ﻿using CarPoolApp.UI;
 using System;
 using System.Collections.Generic;
+using CarPoolApp.Enums;
 
 
 namespace CarPoolApp
@@ -11,44 +12,74 @@ namespace CarPoolApp
         static void ViewBookingMenu()
         {
             Console.Clear();
-            Console.WriteLine("1.View Booking request\n2.View My Bookings\n");
-            ConsoleKey ResponseForViewBooking = Console.ReadKey().Key;
-            switch(ResponseForViewBooking)
+            int response;
+            BookingMenu bookingMenu;
+            Console.WriteLine("1.View Bookings For My Rides\n2.View My Bookings\n");
+            string Response = (Console.ReadLine());
+            Int32.TryParse(Response, out response);
+            if (response > Enum.GetValues(typeof(UserMenu)).Length)
+                response = 0;
+            bookingMenu = (BookingMenu)(response);
+            switch (bookingMenu)
             {
-                case ConsoleKey.D1:
-                    BookingUI.ViewBookingsForMyRides(UserUI.activeUser);
+                case BookingMenu.ViewBookingForMyRides:
+                    BookingUI.ViewBookingsForMyRides();
                     break;
-                case ConsoleKey.D2:
-                    BookingUI.ViewMyBookings(UserUI.activeUser);
+
+                case BookingMenu.ViewMyBookings:
+                    BookingUI.ViewMyBookings();
+                    break;
+
+                case BookingMenu.None:
+                    Console.WriteLine("Invalid Choice");
+                    Console.ReadKey();
+                    ViewBookingMenu();
                     break;
             }
         }
 
-        public static void UserMenu()
+        public static void UserChoices()
         {
             Console.Clear();
+            int response;
+            UserMenu userMenuChoice;
             Console.WriteLine("Hi There, Select any option from menu\n\n");
             Console.WriteLine("1.Create a Ride\n2.Book a Car\n3.View Bookings\n4.View Rides\n5.View Profile\n6.Log Out");
-            ConsoleKey Response = Console.ReadKey().Key;
-            switch (Response)
+            string Response = (Console.ReadLine());
+            Int32.TryParse(Response,out response);
+            if (response > Enum.GetValues(typeof(UserMenu)).Length)
+                response = 0;
+            userMenuChoice = (UserMenu)(response);
+            switch (userMenuChoice)
             {
-                case ConsoleKey.D1:
-                    RideUI.CreateRide(); UserMenu();
+                case UserMenu.CreateRide:
+                    RideUI.CreateRide(); 
                     break;
-                case ConsoleKey.D2:
-                    BookingUI.BookRide();UserMenu();
+
+                case UserMenu.BookRide:
+                    BookingUI.BookRide();
                     break;
-                case ConsoleKey.D3:
-                    ViewBookingMenu();UserMenu();
+
+                case UserMenu.ViewBookingsMenu:
+                    ViewBookingMenu();
                     break;
-                case ConsoleKey.D4:
-                    RideUI.ViewMyRides();UserMenu();
+
+                case UserMenu.ViewMyRides:
+                    RideUI.ViewMyRides();
                     break;
-                case ConsoleKey.D5:
-                    UserUI.ViewProfile(); UserMenu();
+
+                case UserMenu.ViewMyProfile:
+                    UserUI.ViewProfile(); 
                     break;
-                case ConsoleKey.D6:
+
+                case UserMenu.LogOut:
                     UserUI.HomePage();
+                    break;
+
+                case UserMenu.None:
+                    Console.WriteLine("Invalid Choice");
+                    Console.ReadKey();
+                    UserChoices();
                     break;
             }
 
