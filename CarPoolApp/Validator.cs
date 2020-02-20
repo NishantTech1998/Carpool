@@ -154,7 +154,7 @@ namespace CarPoolApp
             return response;
         }
 
-        public static string MenuResponseValidator(this string response)
+        public static string DigitValidator(this string response)
         {
             string strRegex = @"(^[1-9]$)";
             Regex re = new Regex(strRegex);

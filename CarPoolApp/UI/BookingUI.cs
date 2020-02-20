@@ -53,7 +53,7 @@ namespace CarPoolApp.UI
                 RideService rideService = new RideService();
                 BookingService bookingServices = new BookingService();
                 Console.WriteLine("\nEnter the total seats you want");
-                booking.SeatsBooked = int.Parse(Console.ReadLine().NotEmptyValidator().MenuResponseValidator());
+                booking.SeatsBooked = int.Parse(Console.ReadLine().NotEmptyValidator().DigitValidator());
                 booking.RideId = ride.Id;
                 booking.UserId = activeUser;
                 booking.Status = "Waiting";
@@ -118,6 +118,7 @@ namespace CarPoolApp.UI
                 }
             }
             Console.ReadKey();
+            Program.UserChoices();
         }
 
         public static void ConfirmBookingsOnRides()

@@ -90,7 +90,7 @@ namespace CarPoolApp.Services
                 usertoupdate.Car.Model = user.Car.Model;
                 usertoupdate.Car.Color = user.Car.Color;
                 usertoupdate.Car.VehicleNumber = user.Car.VehicleNumber;
-                usertoupdate.Car.TotalSeat = user.Car.TotalSeat;
+                usertoupdate.Car.TotalSeats = user.Car.TotalSeats;
                 db.SaveChanges();
             }
         }

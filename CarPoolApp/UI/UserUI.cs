@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CarPoolApp.UI
 {
-    class UserUI
+    public class UserUI
     {
        public static string activeUser;
 
@@ -20,7 +20,7 @@ namespace CarPoolApp.UI
                 Console.Clear();
                 Console.WriteLine("\t\t\t\t\tCAR POOl APPLICATION");
                 Console.WriteLine("1.Log In\n2.Sign Up\n3.Exit\nAny Number To Exit");
-                Response = Console.ReadLine().NotEmptyValidator().MenuResponseValidator();
+                Response = Console.ReadLine().NotEmptyValidator().DigitValidator();
                 if (Response == "1") { LogIn(); }
                 else if (Response == "2") { SignUp(); }
                 else if(Response=="3") { Environment.Exit(0); }
@@ -91,7 +91,7 @@ namespace CarPoolApp.UI
                 Console.WriteLine("Car Color");
                 car.Color = Console.ReadLine().NotEmptyValidator().NameValidator();
                 Console.WriteLine("Total Seats excluding driver");
-                car.TotalSeat = Int32.Parse(Console.ReadLine().MenuResponseValidator());
+                car.TotalSeats = Int32.Parse(Console.ReadLine().DigitValidator());
                 Console.WriteLine("Vehicle Number");
                 car.VehicleNumber = Console.ReadLine().NotEmptyValidator();
                 user.Car = car;
@@ -103,7 +103,7 @@ namespace CarPoolApp.UI
                 car.Model = "";
                 car.Color = "";
                 car.VehicleNumber = "";
-                car.TotalSeat = -1;
+                car.TotalSeats = -1;
                 user.Car = car;
             }
             Console.WriteLine("User ID");
@@ -177,7 +177,7 @@ namespace CarPoolApp.UI
                 Console.Clear();
                 Console.WriteLine("\nEnter the field number to update\n\n1.First Name\n2.Last Name\n3.Email\n4.Contact Number\n5.Car Brand\n6.Car Model" +
                     "\n7.Car Color\n8.Car Number\n9.Total Seats in Car");
-                string response = Console.ReadLine().NotEmptyValidator().MenuResponseValidator();
+                string response = Console.ReadLine().NotEmptyValidator().DigitValidator();
                 if (response == "1") { Console.WriteLine("First Name :");          user.FirstName = Console.ReadLine().NotEmptyValidator().NameValidator(); }
                 else if (response == "2") { Console.WriteLine("Last Name :");      user.LastName = Console.ReadLine().NotEmptyValidator().NameValidator(); }
                 else if (response == "3") { Console.WriteLine("Email :");          user.Email = Console.ReadLine().NotEmptyValidator().NameValidator(); }
@@ -186,7 +186,7 @@ namespace CarPoolApp.UI
                 else if (response == "6") { Console.WriteLine("Car Model :");      car.Model = Console.ReadLine().NotEmptyValidator().NameValidator(); }
                 else if (response == "7") { Console.WriteLine("Car Color :");      car.Color = Console.ReadLine().NotEmptyValidator().NameValidator(); }
                 else if (response == "8") { Console.WriteLine("Car Number :");     car.VehicleNumber = Console.ReadLine().NotEmptyValidator().NameValidator(); }
-                else if (response == "9") { Console.WriteLine("Total Seats :");    car.TotalSeat = Int32.Parse(Console.ReadLine().NotEmptyValidator().MenuResponseValidator()); }
+                else if (response == "9") { Console.WriteLine("Total Seats :");    car.TotalSeats = Int32.Parse(Console.ReadLine().NotEmptyValidator().DigitValidator()); }
                 else { Console.WriteLine("Wrong Choice"); }
                 Console.WriteLine("{R}: Repeat {any key}: Go Back");
                 choice = Console.ReadLine().NotEmptyValidator();

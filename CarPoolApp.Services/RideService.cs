@@ -16,13 +16,18 @@ namespace CarPoolApp.Services
                 try
                 {
                     db.Rides.Add(ride);
+
                     foreach (City c in ride.ViaPoints)
                     {
                         db.Cities.Add(c);
                     }
                 }
+
                 catch(Exception)
-                { return false; }
+                {
+                    return false;
+                }
+
                 db.SaveChanges();
                 return true;
           }
@@ -31,14 +36,17 @@ namespace CarPoolApp.Services
         public List<Ride> GetRideByRoute(string source, string destination)
         {
             List<Ride> AvailableRide = new List<Ride>();
+
             using (var db = new CarPoolContext())
             {
                 City Source = null;
                 List < Ride > Rides= db.Rides.ToList();
+
                foreach(City city in db.Cities)
                 {
                     if (city.CityName == source)
                         Source = city;
+
                     if (city.CityName == destination && Source != null && city.RideID == Source.RideID && city.Id > Source.Id)
                         AvailableRide.Add(Rides.Where(r => r.Id == Source.RideID).SingleOrDefault());
                 }
@@ -80,7 +88,7 @@ namespace CarPoolApp.Services
         {
             using (var db = new CarPoolContext())
             {
-                return db.Rides.Where(r => r.Id == rideId).Single();
+                return db.Rides.Where(r => r.Id == rideId).SingleOrDefault();
             }
         }
 

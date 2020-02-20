@@ -17,33 +17,40 @@ namespace CarPoolApp.UI
             activeUser = UserUI.activeUser;
             UserService userService = new UserService();
             User user = userService.GetProfile(activeUser);
-            if (user.Car.TotalSeat > 0)
+
+            if (user.Car.TotalSeats > 0)
             {
                 ride.Id = "R" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute;
                 GeoService geoService = new GeoService();
                 string city;
                 Console.Clear();
                 ride.ViaPoints = new List<City>();
+
                 do
                 {
                     Console.WriteLine("Enter Available Seat");
-                    ride.AvailableSeat = Int32.Parse(Console.ReadLine().MenuResponseValidator());
-                    if (ride.AvailableSeat > user.Car.TotalSeat)
+                    ride.AvailableSeats = Int32.Parse(Console.ReadLine().DigitValidator());
+
+                    if (ride.AvailableSeats > user.Car.TotalSeats)
                         Console.WriteLine("\nValue exceeds your's car capacity\n");
-                } while (ride.AvailableSeat > user.Car.TotalSeat);
+
+                } while (ride.AvailableSeats > user.Car.TotalSeats);
 
                 do
                 {
                     cities = new City();
+
                     Console.WriteLine("Enter Source city");
                     city = Console.ReadLine().NotEmptyValidator().NameValidator();
+
                     if (geoService.IsCityAvailable(city))
                     {
                         cities.CityName = city;
                         cities.RideID = ride.Id;
-                        cities.SeatAvailable = ride.AvailableSeat;
+                        cities.SeatAvailable = ride.AvailableSeats;
                         ride.ViaPoints.Add(cities);
                     }
+
                 } while (!geoService.IsCityAvailable(city));
 
                 string Response;
@@ -63,7 +70,7 @@ namespace CarPoolApp.UI
                         {
                             cities.CityName = city;
                             cities.RideID = ride.Id;
-                            cities.SeatAvailable = ride.AvailableSeat;
+                            cities.SeatAvailable = ride.AvailableSeats;
                             ride.ViaPoints.Add(cities);
                         }
                     } while (!geoService.IsCityAvailable(city));
@@ -78,7 +85,7 @@ namespace CarPoolApp.UI
                     {
                         cities.CityName = city;
                         cities.RideID = ride.Id;
-                        cities.SeatAvailable = ride.AvailableSeat;
+                        cities.SeatAvailable = ride.AvailableSeats;
                         ride.ViaPoints.Add(cities);
                     }
                 } while (!geoService.IsCityAvailable(city));
@@ -106,6 +113,7 @@ namespace CarPoolApp.UI
 
         public static void ViewAvailableRide(string source, string destination)
         {
+            activeUser = UserUI.activeUser;
             RideService rideService = new RideService();
             UserService userService = new UserService();
             GeoService geoService = new GeoService();
@@ -114,14 +122,17 @@ namespace CarPoolApp.UI
             Console.WriteLine($"From {source} to {destination} we have following rides for you\n");
             foreach (Ride ride in AvailableRides)
             {
-                User user = userService.GetProfile(ride.UserId);
-                Console.WriteLine($"Ride ID :{ride.Id}");
-                Console.WriteLine($"Ride Creator :{user.FirstName}");
-                Console.WriteLine($"Car Description :{user.Car.Color} {user.Car.Model} {user.Car.Brand}");
-                Console.WriteLine($"Total Distance :{geoService.Distance(source, destination)} KM");
-                Console.WriteLine($"Price per km :{ride.PricePerKm}");
-                Console.WriteLine($"Total Amount :{(ride.PricePerKm * geoService.Distance(source, destination))}");
-                Console.WriteLine($"Expected Start Time :{ride.StartTime}\n\n");
+                if (ride.UserId != activeUser)
+                {
+                    User user = userService.GetProfile(ride.UserId);
+                    Console.WriteLine($"Ride ID :{ride.Id}");
+                    Console.WriteLine($"Ride Creator :{user.FirstName}");
+                    Console.WriteLine($"Car Description :{user.Car.Color} {user.Car.Model} {user.Car.Brand}");
+                    Console.WriteLine($"Total Distance :{geoService.Distance(source, destination)} KM");
+                    Console.WriteLine($"Price per km :{ride.PricePerKm}");
+                    Console.WriteLine($"Total Amount :{(ride.PricePerKm * geoService.Distance(source, destination))}");
+                    Console.WriteLine($"Expected Start Time :{ride.StartTime}\n\n");
+                }
             }
         }
 
