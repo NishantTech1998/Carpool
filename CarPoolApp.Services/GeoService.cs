@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using CarPoolApp.Services.IServices;
 
 namespace CarPoolApp.Services
 {
-    public class GeoService
+    public class GeoService:IGeoService
     {
         private const string csvFile = @"C:\Users\nishant.k\source\repos\Geolocation.csv";
         public bool IsCityAvailable(string city)

@@ -4,10 +4,11 @@ using System.Text;
 using CarPoolApp.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using CarPoolApp.Services.IServices;
 
 namespace CarPoolApp.Services
 {
-    public class UserService
+    public class UserService:IUserService
     { 
 
         public bool Login(string userID, string password)
@@ -24,24 +25,6 @@ namespace CarPoolApp.Services
             }
         }
 
-        public bool SignUp(User user)
-        {
-            using (var db = new CarPoolContext())
-            {
-                try
-                {
-                    db.Add(user);
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-                db.SaveChanges();
-                return true;
-            }
-        }
-
-       // public void ForgetPassword() { }
 
         public User GetProfile(string userId)
         {
@@ -92,6 +75,22 @@ namespace CarPoolApp.Services
                 usertoupdate.Car.VehicleNumber = user.Car.VehicleNumber;
                 usertoupdate.Car.TotalSeats = user.Car.TotalSeats;
                 db.SaveChanges();
+            }
+        }
+        public bool SignUp(User user)
+        {
+            using (var db = new CarPoolContext())
+            {
+                try
+                {
+                    db.Add(user);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+                db.SaveChanges();
+                return true;
             }
         }
     }

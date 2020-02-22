@@ -4,10 +4,11 @@ using System.Text;
 using CarPoolApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using CarPoolApp.Services.IServices;
 
 namespace CarPoolApp.Services
 {
-    public class RideService
+    public class RideService:IRideService
     {
         public bool CreateRide(Ride ride)
         {
@@ -33,35 +34,6 @@ namespace CarPoolApp.Services
           }
         }
 
-        public List<Ride> GetRideByRoute(string source, string destination)
-        {
-            List<Ride> AvailableRide = new List<Ride>();
-
-            using (var db = new CarPoolContext())
-            {
-                City Source = null;
-                List < Ride > Rides= db.Rides.ToList();
-
-               foreach(City city in db.Cities)
-                {
-                    if (city.CityName == source)
-                        Source = city;
-
-                    if (city.CityName == destination && Source != null && city.RideID == Source.RideID && city.Id > Source.Id)
-                        AvailableRide.Add(Rides.Where(r => r.Id == Source.RideID).SingleOrDefault());
-                }
-            }
-            return AvailableRide;
-        }
-
-        public List<Ride> GetMyRides(string userId)
-        {
-            using (var db = new CarPoolContext())
-            {
-                return db.Rides.Where(r => r.UserId == userId).ToList();
-            }
-        }
-
         public void CancelRide(Ride ride)
         {
             using (var db = new CarPoolContext())
@@ -82,6 +54,35 @@ namespace CarPoolApp.Services
 
                 db.SaveChanges();
             }
+        }
+
+        public List<Ride> GetMyRides(string userId)
+        {
+            using (var db = new CarPoolContext())
+            {
+                return db.Rides.Where(r => r.UserId == userId).ToList();
+            }
+        }
+
+        public List<Ride> GetRideByRoute(string source, string destination)
+        {
+            List<Ride> AvailableRide = new List<Ride>();
+
+            using (var db = new CarPoolContext())
+            {
+                City Source = null;
+                List < Ride > Rides= db.Rides.ToList();
+
+               foreach(City city in db.Cities)
+                {
+                    if (city.CityName == source)
+                        Source = city;
+
+                    if (city.CityName == destination && Source != null && city.RideID == Source.RideID && city.Id > Source.Id)
+                        AvailableRide.Add(Rides.Where(r => r.Id == Source.RideID).SingleOrDefault());
+                }
+            }
+            return AvailableRide;
         }
 
         public static Ride GetRideByRideId(string rideId)

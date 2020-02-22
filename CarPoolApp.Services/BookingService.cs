@@ -4,10 +4,11 @@ using System.Text;
 using CarPoolApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using CarPoolApp.Services.IServices;
 
 namespace CarPoolApp.Services
 {
-    public class BookingService
+    public class BookingService:IBookingService
     {
 
         public bool CreateBooking(Booking booking)
