@@ -1,6 +1,8 @@
 ﻿using CarPoolApp.Models;
 using CarPoolApp.Services;
 using System;
+using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Data;
 using System.Collections.Generic;
 using System.Text;
 
@@ -36,7 +38,7 @@ namespace CarPoolApp.UI
             string UserID = Console.ReadLine().NotEmptyValidator();
             Console.WriteLine("PassWord");
             string Password = Console.ReadLine().NotEmptyValidator();
-            UserService userService = new UserService();
+            UserService userService = new UserService(new UserData());
             if (userService.Login(UserID, Password))
             {
                 activeUser = UserID;
@@ -44,6 +46,8 @@ namespace CarPoolApp.UI
             }
             else
             {
+                Console.WriteLine("Login Failed");
+                Console.ReadKey();
                 HomePage();
             }
         }
@@ -55,27 +59,29 @@ namespace CarPoolApp.UI
             Car car = new Car();
             Address address = new Address();
             Console.Clear();
-            Console.WriteLine("First Name");
+            Console.WriteLine("\nFirst Name");
             user.FirstName = Console.ReadLine().NotEmptyValidator().NameValidator();
-            Console.WriteLine("Last Name");
+            Console.WriteLine("\nLast Name");
             user.LastName = Console.ReadLine();
-            Console.WriteLine("Date Of Birth {mm/dd/yyyy}");
+            Console.WriteLine("\nDate Of Birth {mm/dd/yyyy}");
             user.Dob = Console.ReadLine().NotEmptyValidator().DateValidator();
-            Console.WriteLine("Aadhar Number");
+            Console.WriteLine("\nGender {M}:Male {F}:Female {O}:Other");
+            user.Gender = Console.ReadLine().NotEmptyValidator().GenderValidator();
+            Console.WriteLine("\nAadhar Number");
             user.AadharNumber = Console.ReadLine().NotEmptyValidator().AadharValidator() ;
-            Console.WriteLine("Contact Number");
+            Console.WriteLine("\nContact Number");
             user.ContactNumber = Console.ReadLine().NotEmptyValidator().PhoneValidator();
-            Console.WriteLine("Email ID");
+            Console.WriteLine("\nEmail ID");
             user.Email = Console.ReadLine().NotEmptyValidator();
-            Console.WriteLine("Address Line 1");
+            Console.WriteLine("\nAddress Line 1");
             address.FirstLine = Console.ReadLine().NotEmptyValidator();
-            Console.WriteLine("Address Line 2");
+            Console.WriteLine("\nAddress Line 2");
             address.SecondLine = Console.ReadLine().NotEmptyValidator();
-            Console.WriteLine("City");
+            Console.WriteLine("\nCity");
             address.City = Console.ReadLine().NotEmptyValidator();
-            Console.WriteLine("State");
+            Console.WriteLine("\nState");
             address.State = Console.ReadLine().NotEmptyValidator();
-            Console.WriteLine("Pincode");
+            Console.WriteLine("\nPincode");
             address.Pincode = Console.ReadLine().NotEmptyValidator().PinValidator();
             Console.Clear();
             user.CurrentAddress = address;
@@ -86,13 +92,13 @@ namespace CarPoolApp.UI
                 Console.WriteLine("Car Details\n\n");
                 Console.WriteLine("Car Brand");
                 car.Brand = Console.ReadLine().NotEmptyValidator().NameValidator();
-                Console.WriteLine("Car Model");
-                car.Model = Console.ReadLine().NotEmptyValidator().NameValidator();
-                Console.WriteLine("Car Color");
+                Console.WriteLine("\nCar Model");
+                car.Model = Console.ReadLine().NotEmptyValidator();
+                Console.WriteLine("\nCar Color");
                 car.Color = Console.ReadLine().NotEmptyValidator().NameValidator();
-                Console.WriteLine("Total Seats excluding driver");
+                Console.WriteLine("\nTotal Seats excluding driver");
                 car.TotalSeats = Int32.Parse(Console.ReadLine().DigitValidator());
-                Console.WriteLine("Vehicle Number");
+                Console.WriteLine("\nVehicle Number");
                 car.VehicleNumber = Console.ReadLine().NotEmptyValidator();
                 user.Car = car;
                 car.UserId = user.Id;
@@ -106,13 +112,13 @@ namespace CarPoolApp.UI
                 car.TotalSeats = -1;
                 user.Car = car;
             }
-            Console.WriteLine("User ID");
+            Console.WriteLine("\nUser ID");
             user.Id = Console.ReadLine().NotEmptyValidator();
-            Console.WriteLine("PassWord");
+            Console.WriteLine("\nPassWord");
             user.Password = Console.ReadLine().NotEmptyValidator();
             address.UserId = user.Id;
       
-            UserService userService = new UserService();
+            UserService userService = new UserService(new UserData());
             if (userService.SignUp(user))
             { Console.WriteLine("\n\nAdded Successfully");Console.ReadKey(); HomePage(); }
             else
@@ -121,21 +127,21 @@ namespace CarPoolApp.UI
 
         public static void ViewProfile()
         {
-            UserService userService = new UserService();
+            UserService userService = new UserService(new UserData());
             Console.Clear();
             User user = userService.GetProfile(activeUser);
-            Console.WriteLine($"Name :{user.FirstName + " " + user.LastName}");
-            Console.WriteLine($"User ID :{user.Id}");
-            Console.WriteLine($"BirthDate :{user.Dob}");
-            Console.WriteLine($"Email ID :{user.Email}");
+            Console.WriteLine($"Name           :{user.FirstName + " " + user.LastName}");
+            Console.WriteLine($"User ID        :{user.Id}");
+            Console.WriteLine($"Birth Date     :{user.Dob}");
+            Console.WriteLine($"Email ID       :{user.Email}");
             Console.WriteLine($"Contact Number :{user.ContactNumber}");
             Console.WriteLine("\n\nCar Details");
             if (user.Car.Brand != "")
             {
-                Console.WriteLine($"Car Brand :{user.Car.Brand}");
-                Console.WriteLine($"Car Model :{user.Car.Model}");
-                Console.WriteLine($"Car Color :{user.Car.Color}");
-                Console.WriteLine($"Car Number :{user.Car.VehicleNumber}");
+                Console.WriteLine($"Car Brand      :{user.Car.Brand}");
+                Console.WriteLine($"Car Model      :{user.Car.Model}");
+                Console.WriteLine($"Car Color      :{user.Car.Color}");
+                Console.WriteLine($"Car Number     :{user.Car.VehicleNumber}");
             }
             Console.ReadKey();
             Console.WriteLine("\n{D}: Delete  {U}: Update  {B}: Back");
@@ -152,7 +158,7 @@ namespace CarPoolApp.UI
 
         static void DeleteUser()
         {
-            UserService userService = new UserService();
+            UserService userService = new UserService(new UserData());
             Console.Clear();
             Console.WriteLine("Are You Sure You Want To Delete Your Account? {Y}:Yes  {N}:No");
             string response = Console.ReadLine().YesNOValidator();
@@ -167,7 +173,7 @@ namespace CarPoolApp.UI
 
         static void UpdateUser()
         {
-            UserService userService = new UserService();
+            UserService userService = new UserService(new UserData());
             User user = userService.GetProfile(activeUser);
             Car car = user.Car;
             string choice;

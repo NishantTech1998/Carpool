@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 using CarPoolApp.Services;
+using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Data;
 
 namespace CarPoolApp.UI
 {
@@ -13,9 +15,9 @@ namespace CarPoolApp.UI
         public static void CreateRide()
         {
             Ride ride = new Ride();
-            City cities;
+            ViaPoint cities;
             activeUser = UserUI.activeUser;
-            UserService userService = new UserService();
+            UserService userService = new UserService(new UserData());
             User user = userService.GetProfile(activeUser);
 
             if (user.Car.TotalSeats > 0)
@@ -24,7 +26,7 @@ namespace CarPoolApp.UI
                 GeoService geoService = new GeoService();
                 string city;
                 Console.Clear();
-                ride.ViaPoints = new List<City>();
+                ride.ViaPoints = new List<ViaPoint>();
 
                 do
                 {
@@ -38,7 +40,7 @@ namespace CarPoolApp.UI
 
                 do
                 {
-                    cities = new City();
+                    cities = new ViaPoint();
 
                     Console.WriteLine("Enter Source city");
                     city = Console.ReadLine().NotEmptyValidator().NameValidator();
@@ -63,7 +65,7 @@ namespace CarPoolApp.UI
                         break;
                     do
                     {
-                        cities = new City();
+                        cities = new ViaPoint();
                         Console.WriteLine("\nEnter ViaPoint city");
                         city = Console.ReadLine().NotEmptyValidator().NameValidator();
                         if (geoService.IsCityAvailable(city))
@@ -78,7 +80,7 @@ namespace CarPoolApp.UI
 
                 do
                 {
-                    cities = new City();
+                    cities = new ViaPoint();
                     Console.WriteLine("Enter Destination city");
                     city = Console.ReadLine().NotEmptyValidator().NameValidator();
                     if (geoService.IsCityAvailable(city))
@@ -99,7 +101,7 @@ namespace CarPoolApp.UI
 
 
                 ride.UserId = activeUser;
-                RideService rideService = new RideService();
+                RideService rideService = new RideService(new RideData(),new ViaPointData());
                 if (rideService.CreateRide(ride))
                 {
                     Console.WriteLine("Added Successfully");
@@ -111,16 +113,29 @@ namespace CarPoolApp.UI
             Program.UserChoices();
         }
 
-        public static void ViewAvailableRide(string source, string destination)
+        public static void ViewAvailableRide(string source, string destination,string GenderPreference)
         {
             activeUser = UserUI.activeUser;
-            RideService rideService = new RideService();
-            UserService userService = new UserService();
+            RideService rideService = new RideService(new RideData(), new ViaPointData());
+            UserService userService = new UserService(new UserData());
             GeoService geoService = new GeoService();
             Console.Clear();
             List<Ride> AvailableRides = rideService.GetRideByRoute(source, destination);
+            List<Ride> RidesByPreference = new List<Ride>();
+            if(GenderPreference=="Y")
+            {
+                foreach(Ride ride in AvailableRides)
+                {
+                    if (userService.GetProfile(ride.UserId).Gender == userService.GetProfile(activeUser).Gender)
+                        RidesByPreference.Add(ride);
+                }
+            }
+            else
+            {
+                RidesByPreference = AvailableRides;
+            }
             Console.WriteLine($"From {source} to {destination} we have following rides for you\n");
-            foreach (Ride ride in AvailableRides)
+            foreach (Ride ride in RidesByPreference)
             {
                 if (ride.UserId != activeUser)
                 {
@@ -138,7 +153,7 @@ namespace CarPoolApp.UI
 
         public static void ViewMyRides()
         {
-            RideService rideService = new RideService();
+            RideService rideService = new RideService(new RideData(), new ViaPointData());
             activeUser = UserUI.activeUser;
             Console.Clear();
             List<Ride> myRides = rideService.GetMyRides(activeUser);
@@ -152,7 +167,7 @@ namespace CarPoolApp.UI
             string value = Console.ReadLine().NotEmptyValidator();
             if (value != "B")
             {
-                Ride ride = RideService.GetRideByRideId(value);
+                Ride ride = rideService.GetRideByRideId(value);
                 if (ride == null) { Console.WriteLine("No Such Ride Found");Console.ReadKey();Program.UserChoices(); }
                 Console.WriteLine("{D} :Delete {any key} : Go Back");
                 ConsoleKey response = Console.ReadKey().Key;

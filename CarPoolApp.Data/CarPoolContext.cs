@@ -8,7 +8,7 @@ namespace CarPoolApp
 {
     public class CarPoolContext:DbContext
     {
-        private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=CarPool;Trusted_Connection=True;";
+        private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=CarPool;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public CarPoolContext() : base()
         {
@@ -31,6 +31,6 @@ namespace CarPoolApp
         public DbSet<Car> Cars { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Ride> Rides { get; set; }
-        public DbSet<City> Cities { get; set; }
+        public DbSet<ViaPoint> Cities { get; set; }
     }
 }

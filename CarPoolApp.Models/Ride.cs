@@ -14,7 +14,7 @@ namespace CarPoolApp.Models
         public DateTime StartTime { get; set; }
         public string Status { get; set; }
         public double PricePerKm { get; set; }
-        public List<City> ViaPoints = new List<City>();
+        public List<ViaPoint> ViaPoints = new List<ViaPoint>();
         public int AvailableSeats { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }

@@ -8,7 +8,6 @@ namespace CarPoolApp.Services.IServices
     public interface IUserService
     {
         bool Login(string userID, string password);
-        User GetUserById(string userId);
         User GetProfile(string userId);
         void DeleteUser(string userId);
         void UpdateProfile(User user);

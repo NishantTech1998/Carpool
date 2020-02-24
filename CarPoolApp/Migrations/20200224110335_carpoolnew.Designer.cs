@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarPoolApp.Migrations
 {
     [DbContext(typeof(CarPoolContext))]
-    [Migration("20200218121646_carpool")]
-    partial class carpool
+    [Migration("20200224110335_carpoolnew")]
+    partial class carpoolnew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -97,7 +97,7 @@ namespace CarPoolApp.Migrations
                     b.Property<string>("Model")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TotalSeat")
+                    b.Property<int>("TotalSeats")
                         .HasColumnType("int");
 
                     b.Property<string>("VehicleNumber")
@@ -108,33 +108,12 @@ namespace CarPoolApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CarPoolApp.Models.City", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RideID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SeatAvailable")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cities");
-                });
-
             modelBuilder.Entity("CarPoolApp.Models.Ride", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AvailableSeat")
+                    b.Property<int>("AvailableSeats")
                         .HasColumnType("int");
 
                     b.Property<double>("PricePerKm")
@@ -174,6 +153,9 @@ namespace CarPoolApp.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -183,6 +165,27 @@ namespace CarPoolApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CarPoolApp.Models.ViaPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RideID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SeatAvailable")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("CarPoolApp.Models.Address", b =>

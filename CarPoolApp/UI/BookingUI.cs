@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 using CarPoolApp.Services;
+using CarPoolApp.Data;
 
 namespace CarPoolApp.UI
 {
@@ -39,7 +40,10 @@ namespace CarPoolApp.UI
                 }
             } while (!geoService.IsCityAvailable(Destination));
 
-            RideUI.ViewAvailableRide(booking.Source, booking.Destination);
+            Console.WriteLine("Prefer Same Gender? {Y}:Yes {N}:No");
+            string GenderPreference = Console.ReadLine().NotEmptyValidator().YesNOValidator();
+
+            RideUI.ViewAvailableRide(booking.Source, booking.Destination,GenderPreference);
             Console.WriteLine("\nEnter the ride Id to Book or B to go back");
             string Response = Console.ReadLine().NotEmptyValidator();
             
@@ -48,10 +52,11 @@ namespace CarPoolApp.UI
                 Program.UserChoices();
             else
             {
-                Ride ride = RideService.GetRideByRideId(Response);
+                RideService rideService = new RideService(new RideData(), new ViaPointData());
+                BookingService bookingServices = new BookingService(new BookingData(),new ViaPointData());
+                Ride ride = rideService.GetRideByRideId(Response);
                 if (ride == null) { Console.WriteLine("Wrong Ride Id");Console.ReadKey();Program.UserChoices(); }
-                RideService rideService = new RideService();
-                BookingService bookingServices = new BookingService();
+                
                 Console.WriteLine("\nEnter the total seats you want");
                 booking.SeatsBooked = int.Parse(Console.ReadLine().NotEmptyValidator().DigitValidator());
                 booking.RideId = ride.Id;
@@ -79,7 +84,7 @@ namespace CarPoolApp.UI
 
         public static void ViewBookingsForMyRides()
         {
-            RideService rideService = new RideService();
+            RideService rideService = new RideService(new RideData(), new ViaPointData());
             Console.Clear();
             activeUser = UserUI.activeUser;
             List<Ride> myRides = rideService.GetMyRides(activeUser);
@@ -94,8 +99,8 @@ namespace CarPoolApp.UI
             string value = Console.ReadLine().NotEmptyValidator();
             if (value != "B")
             {
-                BookingService bookingService = new BookingService();
-                UserService userService = new UserService();
+                BookingService bookingService = new BookingService(new BookingData(), new ViaPointData());
+                UserService userService = new UserService(new UserData());
                 List<Booking> bookings = bookingService.GetBookingByRideId(value);
                 if (bookings.Count > 0)
                 {
@@ -123,7 +128,7 @@ namespace CarPoolApp.UI
 
         public static void ConfirmBookingsOnRides()
         {
-            BookingService bookingService = new BookingService();
+            BookingService bookingService = new BookingService(new BookingData(), new ViaPointData());
             Console.WriteLine("Enter Booking Id to Update or B to go back");
             string value = Console.ReadLine().NotEmptyValidator();
             if (value != "B")
@@ -145,14 +150,15 @@ namespace CarPoolApp.UI
 
         public static void ViewMyBookings()
         {
-            BookingService bookingService = new BookingService();
-            UserService userService = new UserService();
+            BookingService bookingService = new BookingService(new BookingData(), new ViaPointData());
+            RideService rideService = new RideService(new RideData(), new ViaPointData());
+            UserService userService = new UserService(new UserData());
             Console.Clear();
             List<Booking> bookings = bookingService.GetMyBookings(UserUI.activeUser);
 
             foreach (Booking booking in bookings)
             {
-                User user = userService.GetProfile(RideService.GetRideByRideId(booking.RideId).UserId);
+                User user = userService.GetProfile(rideService.GetRideByRideId(booking.RideId).UserId);
                 Console.WriteLine($"Booking Id :{booking.Id}");
                 Console.WriteLine($"Ride Id :{booking.RideId}");
                 Console.WriteLine($"Source :{booking.Source}");

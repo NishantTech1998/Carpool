@@ -154,6 +154,27 @@ namespace CarPoolApp
             return response;
         }
 
+        public static string GenderValidator(this string gender)
+        {
+            string strRegex = @"(^(M)$)|(^(F)$)|(^(O)$)";
+            Regex re = new Regex(strRegex);
+
+            do
+            {
+                if (re.IsMatch(gender))
+                {
+                    break;
+                }
+                else
+                {
+                    Message("Invalid Choice");
+                    gender = Console.ReadLine().NotEmptyValidator();
+                }
+            } while (true);
+
+            return gender;
+        }
+
         public static string DigitValidator(this string response)
         {
             string strRegex = @"(^[1-9]$)";

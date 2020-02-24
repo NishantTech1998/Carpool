@@ -32,6 +32,6 @@ namespace CarPoolApp
         public DbSet<Car> Cars { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Ride> Rides { get; set; }
-        public DbSet<City> Cities { get; set; }
+        public DbSet<ViaPoint> Cities { get; set; }
     }
 }

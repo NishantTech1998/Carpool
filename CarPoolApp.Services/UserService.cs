@@ -5,93 +5,51 @@ using CarPoolApp.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CarPoolApp.Services.IServices;
+using CarPoolApp.Data.DataInterfaces;
 
 namespace CarPoolApp.Services
 {
-    public class UserService:IUserService
-    { 
+    public class UserService : IUserService
+    {
+        readonly IUserData _userData;
+        public UserService(IUserData dataService)
+        {
+            _userData = dataService;
+        }
 
         public bool Login(string userID, string password)
         {
-            User user = GetUserById(userID);
+            User user = _userData.GetUserById(userID);
             return ((user != null && user.Password == password));
         }
 
-        public User GetUserById(string userId)
-        {
-            using (var db = new CarPoolContext())
-            {
-                return db.Users.Where(user => user.Id == userId).Include(s => s.Car).SingleOrDefault();
-            }
-        }
-
-
         public User GetProfile(string userId)
         {
-            return GetUserById(userId);
+            return _userData.GetUserById(userId);
         }
 
         public void DeleteUser(string userId)
         {
-            using (var db = new CarPoolContext())
-            {
-                db.Users.Remove(GetUserById(userId));
-
-                foreach (Ride ride in db.Rides)
-                {
-                    if (ride.UserId == userId)
-                        db.Rides.Remove(ride);
-                    foreach(City city in db.Cities)
-                    {
-                        if (city.RideID == ride.Id)
-                            db.Cities.Remove(city);
-                    }
-                }
-
-                
-
-                foreach (Booking booking in db.Bookings)
-                {
-                    if (booking.UserId == userId)
-                        db.Bookings.Remove(booking);
-                }
-
-                db.SaveChanges();
-            }
+            _userData.RemoveUser(userId);
         }
 
         public void UpdateProfile(User user)
         {
-            using (var db = new CarPoolContext())
-            {
-               User usertoupdate = db.Users.Include(c => c.Car).Where(u => u.Id == user.Id).Single();
-                usertoupdate.FirstName = user.FirstName;
-                usertoupdate.LastName = user.LastName;
-                usertoupdate.Email = user.Email;
-                usertoupdate.ContactNumber = user.ContactNumber;
-                usertoupdate.Car.Brand = user.Car.Brand;
-                usertoupdate.Car.Model = user.Car.Model;
-                usertoupdate.Car.Color = user.Car.Color;
-                usertoupdate.Car.VehicleNumber = user.Car.VehicleNumber;
-                usertoupdate.Car.TotalSeats = user.Car.TotalSeats;
-                db.SaveChanges();
-            }
+            _userData.UpdateUser(user);
         }
+
         public bool SignUp(User user)
         {
-            using (var db = new CarPoolContext())
+            try
             {
-                try
-                {
-                    db.Add(user);
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-                db.SaveChanges();
-                return true;
+                _userData.AddUser(user);
             }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
+    
     }
 }

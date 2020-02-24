@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CarPoolApp.Models
 {
     
-    public class City
+    public class ViaPoint
     {
        public int Id { get; set; }
        public string CityName { get; set; }
