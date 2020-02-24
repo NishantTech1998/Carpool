@@ -5,16 +5,28 @@ using CarPoolApp.Data.DataInterfaces;
 using CarPoolApp.Data;
 using System.Collections.Generic;
 using System.Text;
-
+using SimpleInjector;
 
 namespace CarPoolApp.UI
 {
     public class UserUI
     {
        public static string activeUser;
+        private static Container container;
+        public UserUI()
+        {
+            container = new Container();
+            var lifestyle = Lifestyle.Singleton;
+            container.Register<IUserData, UserData>(lifestyle);
+        }
+
 
        public static void HomePage()
         {
+             
+            
+            var userService = container.GetInstance<UserData>();
+
             string Response;
 
             do
@@ -38,7 +50,7 @@ namespace CarPoolApp.UI
             string UserID = Console.ReadLine().NotEmptyValidator();
             Console.WriteLine("PassWord");
             string Password = Console.ReadLine().NotEmptyValidator();
-            UserService userService = new UserService(new UserData());
+            //UserService userService = new UserService(new UserData());
             if (userService.Login(UserID, Password))
             {
                 activeUser = UserID;

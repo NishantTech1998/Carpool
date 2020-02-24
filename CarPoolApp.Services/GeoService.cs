@@ -17,12 +17,18 @@ namespace CarPoolApp.Services
                 int count=0;
                 while((line=file.ReadLine())!=null)
                 {
-                    if (line.Split(',')[0] == city) { count++;break;}
+                    if (line.Split(',')[0] == city) {
+                        count++;break;
+                    }
                 }
                 if (count > 0)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
             }
         }
 

@@ -15,7 +15,7 @@ namespace CarPoolApp.UI
         {
             string Source,Destination;
             activeUser = UserUI.activeUser;
-            GeoService geoService = new GeoService();
+            var geoService = new GeoService();
             Booking booking = new Booking();
             Console.Clear();
             booking.Id = "Bid" + activeUser.Substring(0, 3) + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second;

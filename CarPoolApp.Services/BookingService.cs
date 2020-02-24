@@ -92,10 +92,7 @@ namespace CarPoolApp.Services
                 Booking booking = _bookingData.GetBookingbyBookingId(bookingId);
                 if (booking != null)
                 {
-                    if (isConfirm == true)
-                        booking.Status = "Confirm";
-                    else
-                        booking.Status = "Reject";
+                    booking.Status = isConfirm == true ? "Confirm" : "Reject";
                 _bookingData.UpdateBookingStatus(booking);
                     return true;
                 }
