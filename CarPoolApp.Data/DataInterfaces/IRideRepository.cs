@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 
-namespace CarPoolApp.Data.DataInterfaces
+namespace CarPoolApp.Repository.DataInterfaces
 {
-    public interface IRideData
+    public interface IRideRepository
     {
         void AddRide(Ride ride);
         void RemoveRide(Ride ride);

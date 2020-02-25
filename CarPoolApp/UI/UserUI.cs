@@ -1,8 +1,9 @@
 ﻿using CarPoolApp.Models;
 using CarPoolApp.Services;
 using System;
-using CarPoolApp.Data.DataInterfaces;
-using CarPoolApp.Data;
+using CarPoolApp.Helper;
+using CarPoolApp.Services.IServices;
+using CarPoolApp.Repository;
 using System.Collections.Generic;
 using System.Text;
 using SimpleInjector;
@@ -11,22 +12,18 @@ namespace CarPoolApp.UI
 {
     public class UserUI
     {
-       public static string activeUser;
-        private static Container container;
+        public static string activeUser;
+        private IUserService userService;
+
         public UserUI()
         {
-            container = new Container();
-            var lifestyle = Lifestyle.Singleton;
-            container.Register<IUserData, UserData>(lifestyle);
+            userService = DependencyResolver.Get<UserService>();
         }
 
 
-       public static void HomePage()
+       public void HomePage()
         {
              
-            
-            var userService = container.GetInstance<UserData>();
-
             string Response;
 
             do
@@ -43,14 +40,14 @@ namespace CarPoolApp.UI
         }
 
 
-        static void LogIn()
+        public void LogIn()
         {
             Console.Clear();
             Console.WriteLine("User ID");
             string UserID = Console.ReadLine().NotEmptyValidator();
             Console.WriteLine("PassWord");
             string Password = Console.ReadLine().NotEmptyValidator();
-            //UserService userService = new UserService(new UserData());
+            
             if (userService.Login(UserID, Password))
             {
                 activeUser = UserID;
@@ -65,7 +62,7 @@ namespace CarPoolApp.UI
         }
 
 
-        static void SignUp()
+        public void SignUp()
         {
             User user = new User();
             Car car = new Car();
@@ -130,16 +127,16 @@ namespace CarPoolApp.UI
             user.Password = Console.ReadLine().NotEmptyValidator();
             address.UserId = user.Id;
       
-            UserService userService = new UserService(new UserData());
+            
             if (userService.SignUp(user))
             { Console.WriteLine("\n\nAdded Successfully");Console.ReadKey(); HomePage(); }
             else
             { SignUp(); }
         }
 
-        public static void ViewProfile()
+        public void ViewProfile()
         {
-            UserService userService = new UserService(new UserData());
+            
             Console.Clear();
             User user = userService.GetProfile(activeUser);
             Console.WriteLine($"Name           :{user.FirstName + " " + user.LastName}");
@@ -168,9 +165,8 @@ namespace CarPoolApp.UI
                 ViewProfile();
         }
 
-        static void DeleteUser()
-        {
-            UserService userService = new UserService(new UserData());
+        public void DeleteUser()
+        { 
             Console.Clear();
             Console.WriteLine("Are You Sure You Want To Delete Your Account? {Y}:Yes  {N}:No");
             string response = Console.ReadLine().YesNOValidator();
@@ -183,9 +179,8 @@ namespace CarPoolApp.UI
             HomePage();
         }
 
-        static void UpdateUser()
+        public void UpdateUser()
         {
-            UserService userService = new UserService(new UserData());
             User user = userService.GetProfile(activeUser);
             Car car = user.Car;
             string choice;

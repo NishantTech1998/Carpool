@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 using System.Linq;
-using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Repository.DataInterfaces;
 
-namespace CarPoolApp.Data
+namespace CarPoolApp.Repository
 {
-    public class RideData:IRideData
+    public class RideRepository:IRideRepository
     {
         public void AddRide(Ride ride)
         {

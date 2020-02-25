@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using CarPoolApp.Models;
 using CarPoolApp.Services;
-using CarPoolApp.Data;
+using CarPoolApp.Services.IServices;
+using CarPoolApp.Helper;
 
 namespace CarPoolApp.UI
 {
     class BookingUI
     {
         static string activeUser;
+        private IUserService userService;
+        private IBookingService bookingService;
+        private IRideService rideService; 
 
-        public static void BookRide()
+        public BookingUI()
+        {
+            userService = DependencyResolver.Get<UserService>();
+            bookingService = DependencyResolver.Get<BookingService>();
+            rideService = DependencyResolver.Get<RideService>();
+        }
+
+        public void BookRide()
         {
             string Source,Destination;
             activeUser = UserUI.activeUser;
@@ -43,48 +53,57 @@ namespace CarPoolApp.UI
             Console.WriteLine("Prefer Same Gender? {Y}:Yes {N}:No");
             string GenderPreference = Console.ReadLine().NotEmptyValidator().YesNOValidator();
 
-            RideUI.ViewAvailableRide(booking.Source, booking.Destination,GenderPreference);
+            RideUI rideUI = new RideUI();
+
+            rideUI.ViewAvailableRide(booking.Source, booking.Destination,GenderPreference);
             Console.WriteLine("\nEnter the ride Id to Book or B to go back");
             string Response = Console.ReadLine().NotEmptyValidator();
-            
-           
+
+
             if (Response == "B")
+            {
                 Program.UserChoices();
+            }
             else
             {
-                RideService rideService = new RideService(new RideData(), new ViaPointData());
-                BookingService bookingServices = new BookingService(new BookingData(),new ViaPointData());
                 Ride ride = rideService.GetRideByRideId(Response);
-                if (ride == null) { Console.WriteLine("Wrong Ride Id");Console.ReadKey();Program.UserChoices(); }
-                
+                if (ride == null)
+                {
+                    Console.WriteLine("Wrong Ride Id");
+                    Console.ReadKey();
+                    Program.UserChoices();
+                }
+
                 Console.WriteLine("\nEnter the total seats you want");
                 booking.SeatsBooked = int.Parse(Console.ReadLine().NotEmptyValidator().DigitValidator());
                 booking.RideId = ride.Id;
                 booking.UserId = activeUser;
                 booking.Status = "Waiting";
-                if (bookingServices.GetAvailableSeatAtSource(booking) < booking.SeatsBooked)
+                if (bookingService.GetAvailableSeatAtSource(booking) < booking.SeatsBooked)
                 {
-                    Console.WriteLine("Seats exceeds available");
+                    Console.WriteLine("Total Seats exceeds available Seats");
                     Console.ReadKey();
                     Program.UserChoices();
                 }
-                if (bookingServices.CreateBooking(booking))
+
+                if (bookingService.CreateBooking(booking))
                 {
                     Console.WriteLine("Booking Created Successfully");
                 }
+
                 else
                 {
                     Console.WriteLine("Error Encountered During Booking,You have booked this already");
                 }
+
                 Console.WriteLine("Press any key to go back");
                 Console.ReadKey();
                 Program.UserChoices();
             }
         }
 
-        public static void ViewBookingsForMyRides()
+        public void ViewBookingsForMyRides()
         {
-            RideService rideService = new RideService(new RideData(), new ViaPointData());
             Console.Clear();
             activeUser = UserUI.activeUser;
             List<Ride> myRides = rideService.GetMyRides(activeUser);
@@ -99,8 +118,6 @@ namespace CarPoolApp.UI
             string value = Console.ReadLine().NotEmptyValidator();
             if (value != "B")
             {
-                BookingService bookingService = new BookingService(new BookingData(), new ViaPointData());
-                UserService userService = new UserService(new UserData());
                 List<Booking> bookings = bookingService.GetBookingByRideId(value);
                 if (bookings.Count > 0)
                 {
@@ -126,9 +143,8 @@ namespace CarPoolApp.UI
             Program.UserChoices();
         }
 
-        public static void ConfirmBookingsOnRides()
+        public void ConfirmBookingsOnRides()
         {
-            BookingService bookingService = new BookingService(new BookingData(), new ViaPointData());
             Console.WriteLine("Enter Booking Id to Update or B to go back");
             string value = Console.ReadLine().NotEmptyValidator();
             if (value != "B")
@@ -148,11 +164,8 @@ namespace CarPoolApp.UI
             Program.UserChoices();
         }
 
-        public static void ViewMyBookings()
+        public  void ViewMyBookings()
         {
-            BookingService bookingService = new BookingService(new BookingData(), new ViaPointData());
-            RideService rideService = new RideService(new RideData(), new ViaPointData());
-            UserService userService = new UserService(new UserData());
             Console.Clear();
             List<Booking> bookings = bookingService.GetMyBookings(UserUI.activeUser);
 

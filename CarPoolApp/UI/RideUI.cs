@@ -3,21 +3,31 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 using CarPoolApp.Services;
-using CarPoolApp.Data.DataInterfaces;
-using CarPoolApp.Data;
+using CarPoolApp.Services.IServices;
+using CarPoolApp.Helper;
+using CarPoolApp.Repository.DataInterfaces;
+using CarPoolApp.Repository;
+using SimpleInjector;
 
 namespace CarPoolApp.UI
 {
     class RideUI
     {
         static string activeUser;
+        private IUserService userService;
+        private IRideService rideService;
+ 
+        public RideUI()
+        {
+            userService = DependencyResolver.Get<UserService>();
+            rideService = DependencyResolver.Get<RideService>();
+        }
 
-        public static void CreateRide()
+        public void CreateRide()
         {
             Ride ride = new Ride();
             ViaPoint cities;
             activeUser = UserUI.activeUser;
-            UserService userService = new UserService(new UserData());
             User user = userService.GetProfile(activeUser);
 
             if (user.Car.TotalSeats > 0)
@@ -101,7 +111,6 @@ namespace CarPoolApp.UI
 
 
                 ride.UserId = activeUser;
-                RideService rideService = new RideService(new RideData(),new ViaPointData());
                 if (rideService.CreateRide(ride))
                 {
                     Console.WriteLine("Added Successfully");
@@ -113,11 +122,9 @@ namespace CarPoolApp.UI
             Program.UserChoices();
         }
 
-        public static void ViewAvailableRide(string source, string destination,string GenderPreference)
+        public void ViewAvailableRide(string source, string destination,string GenderPreference)
         {
             activeUser = UserUI.activeUser;
-            RideService rideService = new RideService(new RideData(), new ViaPointData());
-            UserService userService = new UserService(new UserData());
             GeoService geoService = new GeoService();
             Console.Clear();
             List<Ride> AvailableRides = rideService.GetRideByRoute(source, destination);
@@ -151,9 +158,8 @@ namespace CarPoolApp.UI
             }
         }
 
-        public static void ViewMyRides()
+        public void ViewMyRides()
         {
-            RideService rideService = new RideService(new RideData(), new ViaPointData());
             activeUser = UserUI.activeUser;
             Console.Clear();
             List<Ride> myRides = rideService.GetMyRides(activeUser);

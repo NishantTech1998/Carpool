@@ -2,6 +2,11 @@
 using System;
 using System.Collections.Generic;
 using CarPoolApp.Enums;
+using CarPoolApp.Helper;
+using CarPoolApp.Repository.DataInterfaces;
+using CarPoolApp.Repository;
+using CarPoolApp.Services;
+using CarPoolApp.Services.IServices;
 
 
 namespace CarPoolApp
@@ -13,6 +18,7 @@ namespace CarPoolApp
         {
             Console.Clear();
             int response;
+            BookingUI bookingUI = new BookingUI();
             BookingMenu bookingMenu;
             Console.WriteLine("1.View Bookings For My Rides\n2.View My Bookings\n");
             string Response = (Console.ReadLine());
@@ -23,11 +29,11 @@ namespace CarPoolApp
             switch (bookingMenu)
             {
                 case BookingMenu.ViewBookingForMyRides:
-                    BookingUI.ViewBookingsForMyRides();
+                    bookingUI.ViewBookingsForMyRides();
                     break;
 
                 case BookingMenu.ViewMyBookings:
-                    BookingUI.ViewMyBookings();
+                    bookingUI.ViewMyBookings();
                     break;
 
                 case BookingMenu.None:
@@ -42,6 +48,9 @@ namespace CarPoolApp
         {
             Console.Clear();
             int response;
+            RideUI rideUI = new RideUI();
+            BookingUI bookingUI = new BookingUI();
+            UserUI userUI = new UserUI();
             UserMenu userMenuChoice;
             Console.WriteLine("Hi There, Select any option from menu\n\n");
             Console.WriteLine("1.Create a Ride\n2.Book a Car\n3.View Bookings\n4.View Rides\n5.View Profile\n6.Log Out");
@@ -53,11 +62,11 @@ namespace CarPoolApp
             switch (userMenuChoice)
             {
                 case UserMenu.CreateRide:
-                    RideUI.CreateRide(); 
+                    rideUI.CreateRide(); 
                     break;
 
                 case UserMenu.BookRide:
-                    BookingUI.BookRide();
+                    bookingUI.BookRide();
                     break;
 
                 case UserMenu.ViewBookingsMenu:
@@ -65,15 +74,15 @@ namespace CarPoolApp
                     break;
 
                 case UserMenu.ViewMyRides:
-                    RideUI.ViewMyRides();
+                    rideUI.ViewMyRides();
                     break;
 
                 case UserMenu.ViewMyProfile:
-                    UserUI.ViewProfile(); 
+                    userUI.ViewProfile(); 
                     break;
 
                 case UserMenu.LogOut:
-                    UserUI.HomePage();
+                    userUI.HomePage();
                     break;
 
                 case UserMenu.None:
@@ -87,7 +96,15 @@ namespace CarPoolApp
 
         static void Main(string[] args)
         {
-            UserUI.HomePage();
+            DependencyResolver.Container.Register<IUserRepository, UserRepository>();
+            DependencyResolver.Container.Register<IRideService, RideService>();
+            DependencyResolver.Container.Register<IBookingService, BookingService>();
+            DependencyResolver.Container.Register<IRideRepository, RideRepository>();
+            DependencyResolver.Container.Register<IViaPointRepository, ViaPointRepository>();
+            DependencyResolver.Container.Register<IBookingRepository, BookingRepository>();
+            DependencyResolver.Container.Verify();
+            UserUI userUI = new UserUI();
+            userUI.HomePage();
             Console.ReadKey();
         }
     }

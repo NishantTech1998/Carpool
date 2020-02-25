@@ -14,7 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarPoolApp.Data\CarPoolApp.Data.csproj" />
+    <ProjectReference Include="..\CarPoolApp.Data\CarPoolApp.Repository.csproj" />
+    <ProjectReference Include="..\CarPoolApp.Helper\CarPoolApp.Helper.csproj" />
     <ProjectReference Include="..\CarPoolApp.Models\CarPoolApp.Models.csproj" />
   </ItemGroup>
 

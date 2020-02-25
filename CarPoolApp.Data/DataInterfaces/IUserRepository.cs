@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 
-namespace CarPoolApp.Data.DataInterfaces
+namespace CarPoolApp.Repository.DataInterfaces
 {
-    public interface IUserData
+    public interface IUserRepository
     {
         User GetUserById(string userId);
         void AddUser(User user);

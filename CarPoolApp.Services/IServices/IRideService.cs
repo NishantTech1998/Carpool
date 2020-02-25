@@ -11,5 +11,6 @@ namespace CarPoolApp.Services.IServices
         void CancelRide(Ride ride);
         List<Ride> GetMyRides(string userId);
         List<Ride> GetRideByRoute(string source, string destination);
+        Ride GetRideByRideId(string rideId);
     }
 }

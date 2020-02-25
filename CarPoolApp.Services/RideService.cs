@@ -2,22 +2,27 @@
 using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using CarPoolApp.Services.IServices;
-using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Repository.DataInterfaces;
+using CarPoolApp.Repository;
+using SimpleInjector;
+using CarPoolApp.Helper;
 
 namespace CarPoolApp.Services
 {
     public class RideService:IRideService
     {
-        readonly IRideData _rideData;
-        readonly IViaPointData _viaPointData;
-        public RideService(IRideData dataService,IViaPointData viaPointData)
+        readonly IRideRepository _rideData;
+        readonly IViaPointRepository _viaPointData;
+
+        public RideService()
         {
-            _rideData = dataService;
-            _viaPointData = viaPointData;
+            _rideData = DependencyResolver.Get<RideRepository>();
+            _viaPointData = DependencyResolver.Get<ViaPointRepository>();
         }
+
 
         public bool CreateRide(Ride ride)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CarPoolApp
+namespace CarPoolApp.Helper
 {
     public static class Validator
     {

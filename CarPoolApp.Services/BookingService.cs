@@ -2,22 +2,25 @@
 using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using CarPoolApp.Services.IServices;
-using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Repository.DataInterfaces;
+using CarPoolApp.Repository;
+using CarPoolApp.Helper;
+using SimpleInjector;
 
 namespace CarPoolApp.Services
 {
     public class BookingService:IBookingService
     {
-        readonly IBookingData _bookingData;
-        readonly IViaPointData _viaPointData;
+        readonly IBookingRepository _bookingData;
+        readonly IViaPointRepository _viaPointData;
 
-        public BookingService(IBookingData bookingData,IViaPointData viaPointData)
+        public BookingService()
         {
-            _bookingData=bookingData;
-            _viaPointData = viaPointData;
+            _bookingData = DependencyResolver.Get<BookingRepository>();
+            _viaPointData = DependencyResolver.Get<ViaPointRepository>();
         }
 
         public bool CreateBooking(Booking booking)

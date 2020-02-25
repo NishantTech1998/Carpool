@@ -4,11 +4,11 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CarPoolApp.Models;
-using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Repository.DataInterfaces;
 
-namespace CarPoolApp.Data
+namespace CarPoolApp.Repository
 {
-    public class UserData:IUserData
+    public class UserRepository:IUserRepository
     {
         public User GetUserById(string userId)
         {

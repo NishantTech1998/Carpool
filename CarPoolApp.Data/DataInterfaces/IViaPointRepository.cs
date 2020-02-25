@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 
-namespace CarPoolApp.Data.DataInterfaces
+namespace CarPoolApp.Repository.DataInterfaces
 {
-    public interface IViaPointData
+    public interface IViaPointRepository
     {
         List<ViaPoint> GetAllViaPointsByBookedRideId(string rideId);
         List<ViaPoint> GetViaPointsByName(string name);

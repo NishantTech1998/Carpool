@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using CarPoolApp.Models;
-using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Repository.DataInterfaces;
 
-namespace CarPoolApp.Data
+namespace CarPoolApp.Repository
 {
-    public class BookingData:IBookingData
+    public class BookingRepository:IBookingRepository
     {
         public void AddBooking(Booking booking)
         {

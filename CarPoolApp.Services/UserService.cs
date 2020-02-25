@@ -5,16 +5,20 @@ using CarPoolApp.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CarPoolApp.Services.IServices;
-using CarPoolApp.Data.DataInterfaces;
+using CarPoolApp.Repository.DataInterfaces;
+using CarPoolApp.Repository;
+using SimpleInjector;
+using CarPoolApp.Helper;
 
 namespace CarPoolApp.Services
 {
     public class UserService : IUserService
     {
-        readonly IUserData _userData;
-        public UserService(IUserData dataService)
+        readonly IUserRepository _userData;
+        
+        public UserService()
         {
-            _userData = dataService;
+            _userData = DependencyResolver.Get<UserRepository>();
         }
 
         public bool Login(string userID, string password)
