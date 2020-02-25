@@ -32,6 +32,7 @@ namespace CarPoolApp.Repository
             using (var db = new CarPoolContext())
             {
                 db.Users.Remove(GetUserById(userId));
+
                 foreach (Ride ride in db.Rides)
                 {
                     if (ride.UserId == userId)
@@ -43,13 +44,13 @@ namespace CarPoolApp.Repository
                     }
                 }
 
+                db.Bookings.RemoveRange(db.Bookings.Where(b => b.UserId == userId));
 
-
-                foreach (Booking booking in db.Bookings)
-                {
-                    if (booking.UserId == userId)
-                        db.Bookings.Remove(booking);
-                }
+                //foreach (Booking booking in db.Bookings)
+                //{
+                //    if (booking.UserId == userId)
+                //        db.Bookings.Remove(booking);
+                //}
 
                 db.SaveChanges();
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CarPoolApp.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using CarPoolApp.Repository.DataInterfaces;
 
 namespace CarPoolApp.Repository
@@ -15,11 +16,12 @@ namespace CarPoolApp.Repository
             {
 
                 db.Rides.Add(ride);
+                db.Cities.AddRange(ride.ViaPoints);
+                //foreach (ViaPoint c in ride.ViaPoints)
+                //{
+                //    db.Cities.Add(c);
+                //}
 
-                foreach (ViaPoint c in ride.ViaPoints)
-                {
-                    db.Cities.Add(c);
-                }
                 db.SaveChanges();
             }
         }
@@ -30,17 +32,22 @@ namespace CarPoolApp.Repository
             {
                 db.Rides.Remove(ride);
 
-                foreach (ViaPoint city in db.Cities)
-                {
-                    if (city.RideID == ride.Id)
-                        db.Cities.Remove(city);
-                }
+                db.Cities.RemoveRange(db.Cities.Where(c => c.RideID == ride.Id));
 
-                foreach (Booking booking in db.Bookings)
-                {
-                    if (booking.RideId == ride.Id)
-                        db.Bookings.Remove(booking);
-                }
+                db.Bookings.RemoveRange(db.Bookings.Where(b => b.RideId == ride.Id));
+
+                //foreach (ViaPoint city in db.Cities)
+                //{
+                //    if (city.RideID == ride.Id)
+                //        db.Cities.Remove(city);
+                //}
+
+                //foreach (Booking booking in db.Bookings)
+                //{
+                //    if (booking.RideId == ride.Id)
+                //        db.Bookings.Remove(booking);
+                //}
+
                 db.SaveChanges();
             }
         }
